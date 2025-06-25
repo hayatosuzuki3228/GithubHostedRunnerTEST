@@ -1,0 +1,31 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>None</ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Emgu.CV" Version="4.8.1.5350" />
+    <PackageReference Include="OpenCvSharp4.runtime.win" Version="4.8.0.20230708" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Hutzper.Library.Common\Hutzper.Library.Common.csproj" />
+    <ProjectReference Include="..\Hutzper.Library.ImageProcessing\Hutzper.Library.ImageProcessing.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="Basler.Pylon">
+      <HintPath>Device\Pylon\Basler.Pylon.dll</HintPath>
+    </Reference>
+    <Reference Include="GenApiDotNet40_v3_4">
+      <HintPath>Device\Sentech\GenApiDotNet40_v3_4.dll</HintPath>
+    </Reference>
+    <Reference Include="PvDotNet">
+      <HintPath>Device\EBus\PvDotNet.dll</HintPath>
+    </Reference>
+    <Reference Include="StApiDotNet40_v1_2">
+      <HintPath>Device\Sentech\StApiDotNet40_v1_2.dll</HintPath>
+    </Reference>
+    <Reference Include="TIS.Imaging.ICImagingControl35">
+      <HintPath>Device\Tis\TIS.Imaging.ICImagingControl35.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+</Project>

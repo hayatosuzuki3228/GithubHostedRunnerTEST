@@ -1,0 +1,14 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Hutzper.Library.Common\Hutzper.Library.Common.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Device\Net\Sockets\Hutzper\" />
+  </ItemGroup>
+
+</Project>

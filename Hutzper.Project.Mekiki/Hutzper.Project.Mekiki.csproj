@@ -1,0 +1,48 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows10.0.19041.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UseWPF>true</UseWPF>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Folder Include="IO\" />
+    <Folder Include="Forms\" />
+    <Folder Include="Resources\" />
+    <Folder Include="Config\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="CommandLineParser" Version="2.9.1" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.4" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.4">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.Extensions.Configuration.FileExtensions" Version="9.0.4" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="9.0.4" />
+    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.4" />
+    <PackageReference Include="Sentry" Version="5.4.0" />
+    <PackageReference Include="Testcontainers.PostgreSql" Version="4.4.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Hutzper.Library.Common\Hutzper.Library.Common.csproj" />
+    <ProjectReference Include="..\Hutzper.Library.DigitalIO\Hutzper.Library.DigitalIO.csproj" />
+    <ProjectReference Include="..\Hutzper.Library.ImageGrabber\Hutzper.Library.ImageGrabber.csproj" />
+    <ProjectReference Include="..\Hutzper.Library.InsightLinkage\Hutzper.Library.InsightLinkage.csproj" />
+    <ProjectReference Include="..\Hutzper.Library.LightController\Hutzper.Library.LightController.csproj" />
+  </ItemGroup>
+
+  <!-- -->
+  <ItemGroup>
+    <Reference Include="Windows">
+      <HintPath>$(WindowsSdkDir)UnionMetadata\Windows.winmd</HintPath>
+      <IsWinMDFile>true</IsWinMDFile>
+    </Reference>
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,25 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="MXIO_NET.dll" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Hutzper.Library.Common\Hutzper.Library.Common.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Device\Moxa\MXIO_NET.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <Link>MXIO_NET.dll</Link>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Y2.Ub.YdciCs" Version="3.0.2" />
+  </ItemGroup>
+
+</Project>
