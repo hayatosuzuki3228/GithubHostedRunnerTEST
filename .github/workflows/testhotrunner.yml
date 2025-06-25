@@ -1,23 +1,25 @@
-name: xUnit
+name: DockerTestRunner
 
 on:
   pull_request:
-    branches: ["develop", "main"]
+    branches: ["main", "develop"]
   push:
-    branches: ["develop", "main"]
+    branches: ["main", "develop"]
 
 jobs:
-  xunit:
+  docker-xunit:
     runs-on: self-hosted
     env:
       NUGET_PACKAGES: ${{ github.workspace }}/.nuget/packages
-      DOCKER_HOST: "npipe:////./pipe/docker_engine"
-
     strategy:
       matrix:
         test_project:
           - Hutzper.Project.Mekiki.Test/Hutzper.Project.Mekiki.Test.csproj
     steps:
+      - uses: actions/checkout@v4
+        with:
+          lfs: true
+
       - name: Create .testcontainers.properties
         shell: powershell
         run: |
