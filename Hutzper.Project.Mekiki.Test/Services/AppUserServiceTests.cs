@@ -1,4 +1,4 @@
-using Hutzper.Project.Mekiki.Models.Auth;
+﻿using Hutzper.Project.Mekiki.Models.Auth;
 using Hutzper.Project.Mekiki.Services.AppConfigService;
 using Hutzper.Project.Mekiki.Services.AppUserService;
 using Microsoft.EntityFrameworkCore;
@@ -37,7 +37,7 @@ public class AppUserServiceTests : IAsyncLifetime
     {
         var password = "test";
         var salt = new byte[] { 1, 2, 3, 4 }; //  テスト用固定値。本来はBase64でランダムに生成
-        var hash = new Rfc2898DeriveBytes(password, salt, 100000, HashAlgorithmName.SHA3_256).GetBytes(32);
+        var hash = new Rfc2898DeriveBytes(password, salt, 100000, HashAlgorithmName.SHA512).GetBytes(32);
 
         var userDeveloper = new AppUser();
         userDeveloper.Username = "Developer";
@@ -113,7 +113,7 @@ public class AppUserServiceTests : IAsyncLifetime
         // テスト用データを作成
         var password = "test";
         var salt = new byte[] { 1, 2, 3, 4 }; //  テスト用固定値。本来はBase64でランダムに生成
-        var hash = new Rfc2898DeriveBytes(password, salt, 100000, HashAlgorithmName.SHA3_256).GetBytes(32);
+        var hash = new Rfc2898DeriveBytes(password, salt, 100000, HashAlgorithmName.SHA512).GetBytes(32);
 
         user.Username = "test";
         user.PasswordHash = Convert.ToBase64String(hash);
@@ -164,11 +164,11 @@ public class AppUserServiceTests : IAsyncLifetime
 
         var password1 = "test";
         var salt1 = new byte[] { 1, 2, 3, 4 };  //  テスト用固定値。本来はBase64でランダムに生成
-        var hash1 = new Rfc2898DeriveBytes(password1, salt1, 100000, HashAlgorithmName.SHA3_256).GetBytes(32);
+        var hash1 = new Rfc2898DeriveBytes(password1, salt1, 100000, HashAlgorithmName.SHA512).GetBytes(32);
 
         var password2 = "test";
         var salt2 = new byte[] { 1, 2, 3, 4 };  //  テスト用固定値。本来はBase64でランダムに生成
-        var hash2 = new Rfc2898DeriveBytes(password2, salt2, 100000, HashAlgorithmName.SHA3_256).GetBytes(32);
+        var hash2 = new Rfc2898DeriveBytes(password2, salt2, 100000, HashAlgorithmName.SHA512).GetBytes(32);
 
         user1.PasswordHash = Convert.ToBase64String(hash1);
         user2.PasswordHash = Convert.ToBase64String(hash2);
@@ -271,10 +271,10 @@ public class AppUserServiceTests : IAsyncLifetime
         var password2 = "test2";
 
         var salt1 = new byte[] { 1, 2, 3, 4 };
-        var hash1 = new Rfc2898DeriveBytes(password1, salt1, 100000, HashAlgorithmName.SHA3_256).GetBytes(32);
+        var hash1 = new Rfc2898DeriveBytes(password1, salt1, 100000, HashAlgorithmName.SHA512).GetBytes(32);
 
         var salt2 = new byte[] { 10, 11, 12, 13 };
-        var hash2 = new Rfc2898DeriveBytes(password2, salt1, 100000, HashAlgorithmName.SHA3_256).GetBytes(32);
+        var hash2 = new Rfc2898DeriveBytes(password2, salt1, 100000, HashAlgorithmName.SHA512).GetBytes(32);
 
         var user = new AppUser
         {
