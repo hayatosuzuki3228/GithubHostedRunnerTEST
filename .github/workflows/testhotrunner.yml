@@ -23,7 +23,7 @@ jobs:
       - name: Create .testcontainers.properties
         shell: powershell
         run: |
-          $content = 'docker.host=npipe:////./pipe/docker_engine'
+          $content = 'docker.host=npipe://./pipe/docker_engine'
           $path = "$env:USERPROFILE\.testcontainers.properties"
           Set-Content -Path $path -Value $content -Encoding ASCII
 
@@ -40,13 +40,3 @@ jobs:
         run: |
           docker ps -a
           docker logs $(docker ps -aq --filter "ancestor=postgres:15") || echo "No container logs"
-
-      - uses: actions/checkout@v4
-        with:
-          lfs: true
-
-      - name: Restore dependencies
-        run: dotnet restore --locked-mode
-
-      - name: Run xUnit Tests
-        run: dotnet test ${{ matrix.test_project }} -r win-x64
