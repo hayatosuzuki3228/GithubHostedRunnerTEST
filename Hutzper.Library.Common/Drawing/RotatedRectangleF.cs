@@ -145,8 +145,8 @@
             {
                 globalCorners[i] = new PointF
                 (
-                    Center.X + localCorners[i].X * cosTheta - localCorners[i].Y * sinTheta,
-                    Center.Y + localCorners[i].X * sinTheta + localCorners[i].Y * cosTheta
+                    this.Center.X + localCorners[i].X * cosTheta - localCorners[i].Y * sinTheta,
+                    this.Center.Y + localCorners[i].X * sinTheta + localCorners[i].Y * cosTheta
                 );
             }
 

@@ -144,7 +144,7 @@ namespace Hutzper.Library.Common.Net.Sockets
         public TcpBinaryCommunicationClient()
         {
             this.communicationLinkage = new();
-            this.communicationLinkage.StreamInvalidated += CommunicationLinkage_StreamInvalidated;
+            this.communicationLinkage.StreamInvalidated += this.CommunicationLinkage_StreamInvalidated;
             this.communicationLinkage.TransferDataRead += (sender, data) =>
             {
                 Serilog.Log.Debug($"{this},{MethodBase.GetCurrentMethod()?.Name},RC,{data}");

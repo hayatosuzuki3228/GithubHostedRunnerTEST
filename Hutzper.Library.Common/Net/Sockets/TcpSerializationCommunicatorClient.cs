@@ -146,7 +146,7 @@ namespace Hutzper.Library.Common.Net.Sockets
         public TcpSerializationCommunicatorClient()
         {
             this.streamReaderWriter = new AsyncSerializationStreamReaderWriter<T>();
-            this.streamReaderWriter.StreamInvalidated += StreamReaderWriter_StreamInvalidated;
+            this.streamReaderWriter.StreamInvalidated += this.StreamReaderWriter_StreamInvalidated;
             this.streamReaderWriter.TransferDataRead += (sender, data) =>
             {
                 Serilog.Log.Debug($"{this},{MethodBase.GetCurrentMethod()?.Name},RC,{data.Header.Command}");

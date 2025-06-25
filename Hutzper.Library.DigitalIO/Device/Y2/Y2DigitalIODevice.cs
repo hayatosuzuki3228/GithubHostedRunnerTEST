@@ -216,7 +216,7 @@ namespace Hutzper.Library.DigitalIO.Device.Y2
 
         public virtual bool WriteOutput(int index, int value)
         {
-            return WriteOutput(index, value != 0);
+            return this.WriteOutput(index, value != 0);
         }
 
         /*

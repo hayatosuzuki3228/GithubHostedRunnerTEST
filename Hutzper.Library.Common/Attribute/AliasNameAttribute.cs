@@ -10,7 +10,7 @@
 
         public AliasNameAttribute(string aliasName)
         {
-            AliasName = aliasName;
+            this.AliasName = aliasName;
         }
     }
 }

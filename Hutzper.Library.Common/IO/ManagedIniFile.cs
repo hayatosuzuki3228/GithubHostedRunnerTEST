@@ -206,7 +206,7 @@ namespace Hutzper.Library.Common.IO
         public bool Save()
         {
             using (var fs = new FileStream(this.Path, FileMode.Create))
-            using (var sw = new StreamWriter(fs, Encoding))
+            using (var sw = new StreamWriter(fs, this.Encoding))
             {
                 sw.WriteLine($"acceptable prefixes for comments are ; and #.");
                 sw.WriteLine();

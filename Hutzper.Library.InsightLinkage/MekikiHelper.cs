@@ -85,7 +85,7 @@ namespace Hutzper.Library.InsightLinkage
     }
 
     /// <summary>
-    /// IInsightLingageRequestを生成するヘルパクラス
+    /// IInsightLinkageRequestを生成するヘルパクラス
     /// </summary>
     public class MekikiHelper
     {
@@ -105,91 +105,18 @@ namespace Hutzper.Library.InsightLinkage
         /// 入力されたMekikiUnitからInsight連携リクエストを生成する
         /// </summary>
         /// <param name="uuid"></param>
-        /// <param name="mekikiUnit"></param>
-        /// <returns></returns>
-        public IInsightLingageRequest[] CreateInsightLinkageRequest(string requestId, string uuid, InsightRequestType requestType, params MekikiUnit[] mekikiUnit) => this.CreateInsightLinkageRequest(requestId, uuid, mekikiUnit.First()?.DateTime ?? DateTime.Now, requestType, mekikiUnit);
-
-        /// <summary>
-        /// 入力されたMekikiUnitからInsight連携リクエストを生成する
-        /// </summary>
-        /// <param name="uuid"></param>
         /// <param name="dateTime"></param>
         /// <param name="mekikiUnit"></param>
         /// <returns></returns>
-        public IInsightLingageRequest[] CreateInsightLinkageRequest(string requestId, string uuid, DateTime dateTime, InsightRequestType requestType, params MekikiUnit[] mekikiUnit)
+        static public IInsightLinkageRequest[] CreateInsightLinkageRequest(string requestId, string deviceUuid, DateTime dateTime, InsightRequestType requestType, IInsightMekikiData baseData, params MekikiUnit[] mekikiUnits)
         {
-            var requests = new List<IInsightLingageRequest>();
+            var requests = new List<IInsightLinkageRequest>();
 
-            if (this.Services is not null)
+            if (mekikiUnits is not null && baseData is not null)
             {
-                var baseData = ServiceCollectionSharing.Instance.ServiceProvider?.GetRequiredService<IInsightMekikiData>();
+                baseData.Initialize(deviceUuid, dateTime);
 
-                if (mekikiUnit is not null && baseData is not null)
-                {
-                    baseData.Initialize(uuid, dateTime);
-
-                    foreach (var m in mekikiUnit)
-                    {
-                        var data = baseData.Clone();
-
-                        if (data is null)
-                        {
-                            continue;
-                        }
-
-                        data.DataCategory = m.DataCategory;
-                        data.Class = m.Class;
-                        data.ImageUploaded = false;
-
-                        if (0 < m.GeneralValues.Count)
-                        {
-                            foreach (var i in Enumerable.Range(0, System.Math.Min(data.Values.Length, m.GeneralValues.Count)))
-                            {
-                                data.Values[i] = m.GeneralValues[i];
-                            }
-                        }
-
-                        if (0 < m.Options.Count)
-                        {
-                            foreach (var i in Enumerable.Range(0, System.Math.Min(data.Values.Length, m.Options.Count)))
-                            {
-                                if (false == data.Options.ContainsKey(m.Options[i]))
-                                {
-                                    data.Options.Add(m.Options[i], data.Values[i]);
-                                }
-                            }
-                        }
-
-                        var fileUploadRequest = (IFileUploadRequest?)null;
-
-                        if (m.ImageFileInfo is not null)
-                        {
-                            data.ImageUploaded = true;
-
-                            fileUploadRequest = new FileUploadRequest(m.ImageFileInfo, m.DestinationFileName, uuid);
-
-                            if (data.DataCategory is not null && false == data.DataCategory.Equals("all"))
-                            {
-                                fileUploadRequest.DestinationFolderHierarchy.Add(data.DataCategory);
-                            }
-                        }
-
-                        requests.Add(new InsightLingageRequest(requestId, data, fileUploadRequest, requestType));
-                    }
-                }
-            }
-
-            return requests.ToArray();
-        }
-        static public IInsightLingageRequest[] CreateInsightLinkageRequest_noDI(string requestId, string uuid, DateTime dateTime, InsightRequestType requestType, IInsightMekikiData baseData, params MekikiUnit[] mekikiUnit)
-        {
-            var requests = new List<IInsightLingageRequest>();
-
-            if (mekikiUnit is not null && baseData is not null)
-            {
-                baseData.Initialize(uuid, dateTime);
-
-                foreach (var m in mekikiUnit)
+                foreach (var unit in mekikiUnits)
                 {
                     var data = baseData.Clone();
 
@@ -198,36 +125,36 @@ namespace Hutzper.Library.InsightLinkage
                         continue;
                     }
 
-                    data.DataCategory = m.DataCategory;
-                    data.Class = m.Class;
+                    data.DataCategory = unit.DataCategory;
+                    data.Class = unit.Class;
                     data.ImageUploaded = false;
 
-                    if (0 < m.GeneralValues.Count)
+                    if (0 < unit.GeneralValues.Count)
                     {
-                        foreach (var i in Enumerable.Range(0, System.Math.Min(data.Values.Length, m.GeneralValues.Count)))
+                        foreach (var i in Enumerable.Range(0, System.Math.Min(data.Values.Length, unit.GeneralValues.Count)))
                         {
-                            data.Values[i] = m.GeneralValues[i];
+                            data.Values[i] = unit.GeneralValues[i];
                         }
                     }
 
-                    if (0 < m.Options.Count)
+                    if (0 < unit.Options.Count)
                     {
-                        foreach (var i in Enumerable.Range(0, System.Math.Min(data.Values.Length, m.Options.Count)))
+                        foreach (var i in Enumerable.Range(0, System.Math.Min(data.Values.Length, unit.Options.Count)))
                         {
-                            if (m.Options[i] is not null && false == data.Options.ContainsKey(m.Options[i]))
+                            if (unit.Options[i] is not null && false == data.Options.ContainsKey(unit.Options[i]))
                             {
-                                data.Options.Add(m.Options[i], data.Values[i]);
+                                data.Options.Add(unit.Options[i], data.Values[i]);
                             }
                         }
                     }
 
                     var fileUploadRequest = (IFileUploadRequest?)null;
 
-                    if (m.ImageFileInfo is not null)
+                    if (unit.ImageFileInfo is not null)
                     {
                         data.ImageUploaded = true;
 
-                        fileUploadRequest = new FileUploadRequest(m.ImageFileInfo, m.DestinationFileName, uuid);
+                        fileUploadRequest = new FileUploadRequest(unit.ImageFileInfo, unit.DestinationFileName, deviceUuid);
 
                         if (data.DataCategory is not null && false == data.DataCategory.Equals("all"))
                         {
@@ -235,7 +162,7 @@ namespace Hutzper.Library.InsightLinkage
                         }
                     }
 
-                    requests.Add(new InsightLingageRequest(requestId, data, fileUploadRequest, requestType));
+                    requests.Add(new InsightLinkageRequest(requestId, data, fileUploadRequest, requestType));
                 }
             }
             return requests.ToArray();

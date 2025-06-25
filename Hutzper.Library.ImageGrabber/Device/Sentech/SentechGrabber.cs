@@ -1194,7 +1194,7 @@ namespace Hutzper.Library.ImageGrabber.Device.Sentech
         /// </summary>
         protected class CStHandles : SafelyDisposable
         {
-            public bool Enabled => null != Device && null != this.DataStream;
+            public bool Enabled => null != this.Device && null != this.DataStream;
 
             public CStSystem System { get; init; }
 

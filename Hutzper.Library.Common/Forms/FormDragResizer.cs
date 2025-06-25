@@ -95,7 +95,7 @@
             }
 
             // 右の判定
-            if ((ResizeDirection & ResizeDirection.Right) == ResizeDirection.Right)
+            if ((this.ResizeDirection & ResizeDirection.Right) == ResizeDirection.Right)
             {
                 var rightRect = new Rectangle(this.targetCotrol.Width - this.resizeAreaRange, 0, this.resizeAreaRange, this.targetCotrol.Height);
                 if (rightRect.Contains(e.Location))

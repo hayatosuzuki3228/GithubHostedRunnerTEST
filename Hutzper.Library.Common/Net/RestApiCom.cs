@@ -48,7 +48,7 @@ namespace Hutzper.Library.Common.Net
             //  HTTPプロトコルのGETコマンドを用いて URLにアクセス
             try
             {
-                string strUri = UriCreate(strDirs, strParams);
+                string strUri = this.UriCreate(strDirs, strParams);
 
                 using (var client = new HttpClient())
                 {
@@ -77,7 +77,7 @@ namespace Hutzper.Library.Common.Net
             //  HTTPプロトコルのPUTコマンドを用いて URLにアクセス
             try
             {
-                string strUri = UriCreate(strDirs, strParams);
+                string strUri = this.UriCreate(strDirs, strParams);
 
                 using (var client = new HttpClient())
                 {
@@ -110,7 +110,7 @@ namespace Hutzper.Library.Common.Net
             //  HTTPプロトコルのPOSTコマンドを用いて URLにアクセス
             try
             {
-                string strUri = UriCreate(strDirs, strParams);
+                string strUri = this.UriCreate(strDirs, strParams);
 
                 using (var client = new HttpClient())
                 {
@@ -162,7 +162,7 @@ namespace Hutzper.Library.Common.Net
             }
 
             //  URI組み立て
-            return (ProtocolTypeVal.ToString().ToLower() + "://" + DirVal + ParamVal);
+            return (this.ProtocolTypeVal.ToString().ToLower() + "://" + DirVal + ParamVal);
         }
     }
 }

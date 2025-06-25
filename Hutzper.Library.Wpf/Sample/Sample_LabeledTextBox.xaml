@@ -1,0 +1,346 @@
+﻿<Window x:Class="Hutzper.Library.Wpf.Samples.ControlsSampleWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Hutzper.Library.Wpf.Samples"
+        xmlns:controls="clr-namespace:Hutzper.Library.Wpf"
+        mc:Ignorable="d"
+        Title="LabeledTextBoxコントロールサンプル" Height="4000" Width="800">
+
+    <Window.Resources>
+        <Style TargetType="GroupBox">
+            <Setter Property="Margin" Value="10"/>
+            <Setter Property="Padding" Value="10"/>
+        </Style>
+        <Style TargetType="Button">
+            <Setter Property="Margin" Value="5"/>
+            <Setter Property="Padding" Value="10,5"/>
+            <Setter Property="MinWidth" Value="100"/>
+        </Style>
+    </Window.Resources>
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <StackPanel>
+            <TextBlock Text="LabeledTextBoxコントロールサンプル" 
+                       FontSize="24" 
+                       FontWeight="Bold" 
+                       Margin="10,20,10,10"
+                       HorizontalAlignment="Center"/>
+
+            <!-- LabeledTextBox サンプル -->
+            <GroupBox Header="LabeledTextBox サンプル">
+                <StackPanel>
+                    <!-- 基本的な使用例 -->
+                    <controls:LabeledTextBox x:Name="BasicTextBox" 
+                                            LabelText="氏名" 
+                                            LabelWidth="150"
+                                            Margin="0,5"/>
+
+                    <!-- 必須項目例 -->
+                    <controls:LabeledTextBox x:Name="RequiredTextBox" 
+                                            LabelText="メールアドレス" 
+                                            LabelWidth="150"
+                                            Required="True"
+                                            Margin="0,5"/>
+
+                    <!-- 背景色カスタム例 -->
+                    <controls:LabeledTextBox x:Name="CustomBgTextBox"
+                                            LabelText="電話番号" 
+                                            LabelWidth="150"
+                                            BackgroundColor="#E8F5E9"
+                                            Margin="0,5"/>
+
+                    <!-- エラー状態の例 -->
+                    <controls:LabeledTextBox x:Name="ErrorTextBox" 
+                                            LabelText="郵便番号" 
+                                            LabelWidth="150"
+                                            HasError="True"
+                                            ErrorMessage="正しい郵便番号形式で入力してください（例：123-4567）"
+                                            Margin="0,5"/>
+
+                    <!-- ラベル幅変更例 -->
+                    <controls:LabeledTextBox x:Name="WideLabelTextBox" 
+                                            LabelText="配送先住所" 
+                                            LabelWidth="200"
+                                            Margin="0,5"/>
+
+                    <!-- バリデーション機能の例 -->
+                    <controls:LabeledTextBox x:Name="ValidationTextBox" 
+                                            LabelText="年齢" 
+                                            LabelWidth="150"
+                                            Required="True"
+                                            Margin="0,5"/>
+
+                    <!-- 操作ボタン -->
+                    <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
+                        <Button x:Name="ValidateAllButton" 
+                                Content="全項目検証" 
+                                Click="ValidateAllButton_Click"/>
+
+                        <Button x:Name="ResetButton" 
+                                Content="リセット" 
+                                Click="ResetButton_Click"/>
+
+                        <Button x:Name="ShowErrorButton" 
+                                Content="エラー表示" 
+                                Click="ShowErrorButton_Click"/>
+                    </StackPanel>
+                </StackPanel>
+            </GroupBox>
+            <!-- 内容変更サンプル -->
+            <GroupBox Header="内容変更時の背景色変更サンプル">
+                <StackPanel>
+                    <TextBlock TextWrapping="Wrap" Margin="0,0,0,10">
+                        このサンプルは、テキストボックスの内容が変更されると背景色が自動的に変わる機能を示しています。
+                        変更をリセットするとオリジナルの状態に戻ります。
+                    </TextBlock>
+
+                    <!-- 通常のテキストボックスの変更サンプル -->
+                    <controls:LabeledTextBox x:Name="ContentChangeTextBox" 
+                                LabelText="内容変更テスト" 
+                                LabelWidth="150"
+                                Text="初期値"
+                                Margin="0,5"/>
+
+                    <!-- 複数行テキストボックスの変更サンプル -->
+                    <controls:LabeledTextBox x:Name="ContentChangeMultilineTextBox" 
+                              LabelText="複数行変更テスト" 
+                              LabelWidth="150"
+                              Text="複数行の初期テキスト&#x0A;2行目のテキスト"
+                              IsMultiline="True"
+                              TextBoxHeight="80"
+                              Margin="0,5"/>
+
+                    <!-- 操作ボタン -->
+                    <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
+                        <Button x:Name="ResetModifiedButton" 
+                    Content="変更をリセット" 
+                    Click="ResetModifiedButton_Click"/>
+
+                        <Button x:Name="SetDefaultTextButton" 
+                    Content="初期値に戻す" 
+                    Click="SetDefaultTextButton_Click"/>
+
+                        <Button x:Name="SetChangedTextButton"
+                    Content="テキスト変更" 
+                    Click="SetChangedTextButton_Click"/>
+                    </StackPanel>
+                </StackPanel>
+            </GroupBox>
+            <!-- テキストエリアのサンプル -->
+            <GroupBox Header="テキストエリアサンプル">
+                <StackPanel>
+                    <!-- 基本的なテキストエリア -->
+                    <controls:LabeledTextBox x:Name="BasicTextArea" 
+                                          LabelText="説明" 
+                                          LabelWidth="150"
+                                          IsMultiline="True"
+                                          TextBoxHeight="80"
+                                          Margin="0,5"/>
+
+                    <!-- 必須入力のテキストエリア -->
+                    <controls:LabeledTextBox x:Name="RequiredTextArea" 
+                                          LabelText="コメント" 
+                                          LabelWidth="150"
+                                          IsMultiline="True"
+                                          TextBoxHeight="60"
+                                          Required="True"
+                                          Margin="0,5"/>
+
+                    <!-- カスタム背景色のテキストエリア -->
+                    <controls:LabeledTextBox x:Name="CustomBgTextArea" 
+                                          LabelText="備考" 
+                                          LabelWidth="150"
+                                          IsMultiline="True"
+                                          TextBoxHeight="120"
+                                          BackgroundColor="#FFF8E1"
+                                          Margin="0,5"/>
+
+                    <!-- エラー状態のテキストエリア -->
+                    <controls:LabeledTextBox x:Name="ErrorTextArea" 
+                                          LabelText="フィードバック" 
+                                          LabelWidth="150"
+                                          IsMultiline="True"
+                                          TextBoxHeight="60"
+                                          HasError="True"
+                                          ErrorMessage="50文字以上入力してください"
+                                          Margin="0,5"/>
+
+                    <!-- 操作ボタン -->
+                    <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
+                        <Button x:Name="ValidateTextAreasButton" 
+                                Content="テキストエリア検証" 
+                                Click="ValidateTextAreasButton_Click"/>
+
+                        <Button x:Name="ClearTextAreasButton" 
+                                Content="テキストエリアクリア" 
+                                Click="ClearTextAreasButton_Click"/>
+                    </StackPanel>
+                </StackPanel>
+            </GroupBox>
+            <!-- テキストフォーマットのサンプル -->
+            <GroupBox Header="テキストフォーマットサンプル">
+                <StackPanel>
+                    <TextBlock TextWrapping="Wrap" Margin="0,0,0,10">
+            このサンプルは、TextTypeプロパティを使用してテキストボックスの内容を文字列または数値としてフォーマットする機能を示しています。
+            数値タイプの場合、フォーカスが外れると指定された小数点以下の桁数でフォーマットされます。
+                    </TextBlock>
+
+                    <!-- 文字列タイプのLabeledTextBox -->
+                    <controls:LabeledTextBox x:Name="StringTypeTextBox" 
+                              LabelText="文字列タイプ" 
+                              LabelWidth="200"
+                              TextType="String"
+                              Text="テキスト入力"
+                              Margin="0,5"/>
+
+                    <!-- 数値タイプのLabeledTextBox（小数点以下2桁） -->
+                    <controls:LabeledTextBox x:Name="NumberType2DecimalTextBox" 
+                              LabelText="数値タイプ（小数点以下2桁）" 
+                              LabelWidth="200"
+                              TextType="Number"
+                              DecimalPlaces="2"
+                              Text="123.4"
+                              Margin="0,5"/>
+
+                    <!-- 数値タイプのLabeledTextBox（小数点以下3桁） -->
+                    <controls:LabeledTextBox x:Name="NumberType3DecimalTextBox" 
+                              LabelText="数値タイプ（小数点以下3桁）" 
+                              LabelWidth="200"
+                              TextType="Number"
+                              DecimalPlaces="3"
+                              Text="567.89"
+                              Margin="0,5"/>
+
+                    <!-- 初期値なしの数値タイプのLabeledTextBox -->
+                    <controls:LabeledTextBox x:Name="EmptyNumberTextBox" 
+                              LabelText="数値タイプ（空）" 
+                              LabelWidth="200"
+                              TextType="Number"
+                              DecimalPlaces="2"
+                              Margin="0,5"/>
+
+                    <!-- 整数として表示したい数値タイプのLabeledTextBox -->
+                    <controls:LabeledTextBox x:Name="IntegerNumberTextBox" 
+                              LabelText="整数タイプ" 
+                              LabelWidth="200"
+                              TextType="Number"
+                              DecimalPlaces="0"
+                              Text="42"
+                              Margin="0,5"/>
+
+                    <!-- 操作ボタン -->
+                    <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
+                        <Button x:Name="FormatTextButton" 
+                    Content="テキストフォーマット" 
+                    Click="FormatTextButton_Click"/>
+
+                        <Button x:Name="GetNumericValuesButton" 
+                    Content="数値を取得" 
+                    Click="GetNumericValuesButton_Click"/>
+
+                        <Button x:Name="ClearFormattedButton" 
+                    Content="クリア" 
+                    Click="ClearFormattedButton_Click"/>
+                    </StackPanel>
+                </StackPanel>
+            </GroupBox>
+
+
+            <!-- LabeledTextBox の様々なレイアウト例 -->
+            <GroupBox Header="レイアウト例">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <!-- グリッドレイアウト例 -->
+                    <StackPanel Grid.Column="0" Grid.Row="0">
+                        <TextBlock Text="フォーム形式" FontWeight="Bold" Margin="0,0,0,5"/>
+                        <controls:LabeledTextBox LabelText="会社名" LabelWidth="80" Margin="5,2"/>
+                        <controls:LabeledTextBox LabelText="部署" LabelWidth="80" Margin="5,2"/>
+                        <controls:LabeledTextBox LabelText="役職" LabelWidth="80" Margin="5,2"/>
+                    </StackPanel>
+
+                    <!-- 横並びレイアウト例 -->
+                    <StackPanel Grid.Column="1" Grid.Row="0">
+                        <TextBlock Text="横並び形式" FontWeight="Bold" Margin="0,0,0,5"/>
+                        <WrapPanel>
+                            <controls:LabeledTextBox LabelText="姓" LabelWidth="40" Width="200" Margin="5,2,5,2"/>
+                            <controls:LabeledTextBox LabelText="名" LabelWidth="40" Width="200" Margin="5,2"/>
+                        </WrapPanel>
+                        <WrapPanel Margin="0,5,0,0">
+                            <controls:LabeledTextBox LabelText="郵便番号" LabelWidth="70" Width="200" Margin="5,2,5,2"/>
+                            <Button Content="住所検索" VerticalAlignment="Center"/>
+                        </WrapPanel>
+                    </StackPanel>
+
+                    <!-- カスタム使用例 -->
+                    <StackPanel Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2" Margin="0,10,0,0">
+                        <TextBlock Text="複合フォーム例" FontWeight="Bold" Margin="0,0,0,5"/>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+
+                            <controls:LabeledTextBox Grid.Column="0" Grid.Row="0" LabelText="商品名" LabelWidth="80" Margin="5,2,5,2" Required="True"/>
+                            <controls:LabeledTextBox Grid.Column="1" Grid.Row="0" LabelText="型番" LabelWidth="80" Margin="5,2" BackgroundColor="#EDE7F6"/>
+                            <controls:LabeledTextBox Grid.Column="0" Grid.Row="1" LabelText="単価" LabelWidth="80" Margin="5,2,5,2"/>
+                            <controls:LabeledTextBox Grid.Column="1" Grid.Row="1" LabelText="数量" LabelWidth="80" Margin="5,2"/>
+                            <controls:LabeledTextBox Grid.Column="0" Grid.Row="2" Grid.ColumnSpan="2" 
+                                                  LabelText="詳細説明" 
+                                                  LabelWidth="80" 
+                                                  Margin="5,2"
+                                                  IsMultiline="True"
+                                                  TextBoxHeight="100"/>
+                        </Grid>
+                    </StackPanel>
+                </Grid>
+            </GroupBox>
+
+            <!-- 操作説明 -->
+            <GroupBox Header="コントロール操作説明">
+                <StackPanel>
+                    <TextBlock TextWrapping="Wrap" Margin="0,0,0,5">
+                        <Run FontWeight="Bold">基本的な使用方法:</Run> LabeledTextBoxはラベル付きのテキストボックスで、バリデーション機能が組み込まれています。
+                    </TextBlock>
+                    <TextBlock TextWrapping="Wrap" Margin="0,0,0,5">
+                        <Run FontWeight="Bold">プロパティ:</Run>
+                        <LineBreak/>• LabelText - ラベルに表示するテキスト
+                        <LineBreak/>• LabelWidth - ラベル部分の幅
+                        <LineBreak/>• Required - 必須入力項目かどうか
+                        <LineBreak/>• Text - テキストボックスの値
+                        <LineBreak/>• BackgroundColor - 背景色
+                        <LineBreak/>• HasError - エラー状態
+                        <LineBreak/>• ErrorMessage - エラーメッセージ
+                        <LineBreak/>• IsMultiline - 複数行モードの有効/無効
+                        <LineBreak/>• TextBoxHeight - テキストボックスの高さ（複数行モード時）
+                        <LineBreak/>• TextType - テキストの種類（String：文字列、Number：数値）
+                        <LineBreak/>• DecimalPlaces - 数値タイプの場合の小数点以下の表示桁数
+                        <LineBreak/>• TextFontSize - テキストのフォントサイズ
+                        <LineBreak/>• LabelFontSize - ラベルのフォントサイズ
+                        <LineBreak/>• LabelFontWeight - ラベルのフォントの太さ
+                        <LineBreak/>• ErrorMessageFontSize - エラーメッセージのフォントサイズ
+                    </TextBlock>
+                    <TextBlock TextWrapping="Wrap">
+                        <Run FontWeight="Bold">バリデーション:</Run> ValidationEnabled=true に設定し、ValidateTextイベントハンドラを登録することで、
+                        カスタムバリデーションを実装できます。
+                        必須チェックはRequired指定時に、文字列の長さチェック、数値の桁数（小数点含む）、小数点桁数チェックなどはValidationEnabled=trueの場合デフォルトで実施されます。
+                    </TextBlock>
+                </StackPanel>
+            </GroupBox>
+        </StackPanel>
+    </ScrollViewer>
+</Window>

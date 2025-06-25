@@ -100,7 +100,7 @@
 
         public FractionalValueLabelUserControl()
         {
-            InitializeComponent();
+            this.InitializeComponent();
 
             this.numeratorFont = new Font(this.Font.FontFamily, this.Font.Size);
             this.denominatorFont = new Font(this.Font.FontFamily, this.Font.Size);

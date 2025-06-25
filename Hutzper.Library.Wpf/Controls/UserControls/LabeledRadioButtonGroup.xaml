@@ -1,0 +1,71 @@
+﻿<UserControl x:Class="Hutzper.Library.Wpf.LabeledRadioButtonGroup"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:Hutzper.Library.Wpf"
+             xmlns:conv="clr-namespace:Hutzper.Library.Wpf.Utils"
+             mc:Ignorable="d" 
+             d:DesignHeight="100" d:DesignWidth="400"
+             x:Name="root">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <!-- ラベルを含む列 -->
+            <ColumnDefinition Width="{Binding LabelWidth, ElementName=root}"/>
+            <!-- ラジオボタングループ用の列 -->
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- ラベルと必須マークを横並びにするStackPanel -->
+        <StackPanel Grid.Column="0" Grid.Row="0"
+                    Orientation="Vertical" 
+                    VerticalAlignment="Center">
+            <!-- 項目ラベル -->
+            <TextBlock Text="{Binding LabelText, ElementName=root}"
+                FontSize="{Binding LabelFontSize, ElementName=root, Converter={StaticResource FontSizeConverter}}"
+                Foreground="{StaticResource FontColor}"
+                FontWeight="{Binding LabelFontWeight, ElementName=root}"
+                VerticalAlignment="Center"
+                TextWrapping="Wrap"
+                Width="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=StackPanel}, Converter={StaticResource WidthMinusStarConverter}, ConverterParameter=20}"/>
+
+            <!-- 必須マーク -->
+            <TextBlock Text="*" 
+                       Foreground="Red"
+                       Margin="2,0,0,0"
+                       Visibility="{Binding Required, ElementName=root, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+        </StackPanel>
+
+        <!-- ラジオボタングループ -->
+        <ItemsControl Grid.Column="1" Grid.Row="0"
+              ItemsSource="{Binding Items, ElementName=root}">
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <StackPanel Orientation="{Binding Orientation, ElementName=root}"/>
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                    <local:RadioButton Content="{Binding Text}" 
+                              Tag="{Binding Value}"
+                              Margin="0,0,10,10"
+                              IsChecked="{Binding IsSelected, Mode=TwoWay}"
+                              IsEnabled="{Binding IsRadioButtonGroupEnabled, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                              Checked="RadioButton_Checked"/>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
+
+        <!-- エラーメッセージ（ラジオボタングループの下） -->
+        <TextBlock Grid.Column="1" Grid.Row="1"
+               Text="{Binding ErrorMessage, ElementName=root}"
+               FontSize="{Binding ErrorMessageFontSize, ElementName=root, Converter={StaticResource FontSizeConverter}}"
+               Foreground="Red"
+               Margin="0,2,0,0"
+               Visibility="{Binding HasError, ElementName=root, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+    </Grid>
+</UserControl>

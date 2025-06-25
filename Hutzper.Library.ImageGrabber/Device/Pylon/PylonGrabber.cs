@@ -110,7 +110,7 @@ namespace Hutzper.Library.ImageGrabber.Device.Pylon
         /// </summary>
         public override double DigitalGain
         {
-            get => GetValue<long?>(PLCamera.DigitalShift) ?? 0L;
+            get => this.GetValue<long?>(PLCamera.DigitalShift) ?? 0L;
 
             set
             {

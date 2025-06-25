@@ -18,7 +18,7 @@
         /// </summary>
         public HutzperSplashForm()
         {
-            InitializeComponent();
+            this.InitializeComponent();
 
             //this.labelCustomizer.Attach(this.label1, true, false, Drawing.RoundedCorner.All, 0);
         }

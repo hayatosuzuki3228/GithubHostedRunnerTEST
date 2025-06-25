@@ -16,6 +16,7 @@ public class AppConfigDbContext : DbContext
 
     public DbSet<AppConfig> AppConfigs { get; set; } = null!;
     public DbSet<AppUser> AppUsers { get; set; } = null!;
+    public DbSet<InspectionUnit> InspectionUnits { get; set; } = null!;
 
     /// <summary>
     /// マイグレーション前に呼び出される初期化処理
@@ -74,6 +75,31 @@ public class AppConfigDbContext : DbContext
                 .IsRequired();
 
             entity.HasIndex(e => e.Username).IsUnique();    // ユーザ名に重複は許さない
+        });
+
+        // InspectionUnitで定義されるテーブルを作成する処理
+        modelBuilder.Entity<InspectionUnit>(entity =>
+        {
+            entity.ToTable("Inspection_unit", t =>
+            {
+                t.HasCheckConstraint("CK_Inspection_DisplayOrder_Enum", "display_order >= 0");
+            });
+            entity.HasKey(e => e.Id);   // 主キー
+            entity.HasOne(e => e.AppConfig).WithMany(e => e.inspectionUnits);   // InspectionUnitsを多としてAppConfigを外部キーとして登録
+            entity.Property(e => e.Name)
+                .HasColumnName("name")
+                .IsRequired();  // NOT NULL
+            entity.Property(e => e.Description)
+                .HasColumnName("description");  // NULLを許容
+            entity.Property(e => e.DisplayOrder)
+                .HasColumnName("display_order")
+                .IsRequired();  // NOT NULL
+            entity.Property(e => e.CreatedAt)
+                .HasColumnName("created_at");   // NULLを許容
+            entity.Property(e => e.UpdatedAt)
+                .HasColumnName("updated_at");   // NULLを許容
+
+            entity.HasIndex(e => e.DisplayOrder).IsUnique();    // DisplayOrderに重複は許さない
         });
     }
 }

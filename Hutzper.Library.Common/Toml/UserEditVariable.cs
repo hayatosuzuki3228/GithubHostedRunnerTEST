@@ -34,7 +34,7 @@ public record UserEditVariable<T> : ITomlMetadataProvider
     public UserEditVariable(T Value)
     {
         this.Value = Value;
-        EditingData = null;
+        this.EditingData = null;
     }
 
     // 編集用のデータ

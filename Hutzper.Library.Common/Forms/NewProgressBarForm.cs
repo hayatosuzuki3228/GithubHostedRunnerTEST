@@ -531,7 +531,7 @@ namespace Hutzper.Library.Common.Forms
         public NewProgressBarForm(IServiceCollectionSharing? serviceCollectionSharing = null, Action<object>? cancellationCallback = null)
         {
             // コンポーネントを初期化する
-            InitializeComponent();
+            this.InitializeComponent();
 
             // 最前面表示を明示的に無効化
             this.TopMost = false;

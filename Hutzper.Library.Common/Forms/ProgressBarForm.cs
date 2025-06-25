@@ -469,7 +469,7 @@ namespace Hutzper.Library.Common.Forms
         public ProgressBarForm(IServiceCollectionSharing? serviceCollectionSharing = null, Action<object>? cancellationCallback = null) : base(serviceCollectionSharing)
         {
             // コンポーネントを初期化する
-            InitializeComponent();
+            this.InitializeComponent();
 
             // キャンセルコールバックを設定する
             this.cancellationCallback = cancellationCallback;

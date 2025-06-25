@@ -34,7 +34,7 @@
                 (m.Msg == WM_PAINT || m.Msg == WM_LBUTTONDOWN)
             && this.Enabled
             && string.IsNullOrEmpty(this.Text)
-            && !string.IsNullOrEmpty(WatermarkText)
+            && !string.IsNullOrEmpty(this.WatermarkText)
             )
             {
                 using var g = Graphics.FromHwnd(this.Handle);
@@ -42,7 +42,7 @@
                 var rect = this.ClientRectangle;
                 rect.Offset(1, 1);
 
-                TextRenderer.DrawText(g, WatermarkText, this.Font, rect, Color.LightGray, TextFormatFlags.Top | TextFormatFlags.Left);
+                TextRenderer.DrawText(g, this.WatermarkText, this.Font, rect, Color.LightGray, TextFormatFlags.Top | TextFormatFlags.Left);
             }
         }
     }

@@ -1,0 +1,34 @@
+﻿<UserControl x:Class="Hutzper.Library.Wpf.LabeledContent"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             mc:Ignorable="d" 
+             d:DesignHeight="30" d:DesignWidth="300"
+             x:Name="root">
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="{Binding LabelWidth, ElementName=root}"/>
+            <ColumnDefinition Width="15"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <!-- 項目ラベル -->
+        <TextBlock Text="{Binding LabelText, ElementName=root}"
+                FontSize="{Binding LabelFontSize, ElementName=root, Converter={StaticResource FontSizeConverter}}"
+                Foreground="{StaticResource FontColor}"
+                FontWeight="{Binding LabelFontWeight, ElementName=root}"
+                VerticalAlignment="Center"
+                TextWrapping="Wrap"
+                Width="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=StackPanel}, Converter={StaticResource WidthMinusStarConverter}, ConverterParameter=20}"/>
+
+        <!-- 内容ラベル -->
+        <TextBlock Grid.Column="2"
+                   Text="{Binding ContentText, ElementName=root}"
+                   FontSize="{Binding ContentFontSize, ElementName=root, Converter={StaticResource FontSizeConverter}}"
+                   Foreground="{StaticResource FontColor}"
+                   TextWrapping="Wrap"
+                   VerticalAlignment="Center"/>
+    </Grid>
+</UserControl>

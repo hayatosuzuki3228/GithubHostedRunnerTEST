@@ -144,7 +144,7 @@
                 returnedValue = null;
             }
 
-            if (false == ReadString(appName, keyName, defaultValue?.FullName ?? string.Empty, out string returnedString))
+            if (false == this.ReadString(appName, keyName, defaultValue?.FullName ?? string.Empty, out string returnedString))
             {
                 return false;
             }

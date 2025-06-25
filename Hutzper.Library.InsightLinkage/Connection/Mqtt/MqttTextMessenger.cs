@@ -8,407 +8,404 @@ using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using uPLibrary.Networking.M2Mqtt;
 
-namespace Hutzper.Library.InsightLinkage.Connection.Mqtt
+namespace Hutzper.Library.InsightLinkage.Connection.Mqtt;
+
+/// <summary>
+/// Mqtt テキストメッセンジャーパラメータ
+/// </summary>
+[Serializable]
+public class MqttTextMessenger : ControllerBase, ITextMessenger
 {
+    #region IController
+
     /// <summary>
-    /// Mqtt テキストメッセンジャーパラメータ
+    /// 初期化
     /// </summary>
-    [Serializable]
-    public class MqttTextMessenger : ControllerBase, ITextMessenger
+    /// <param name="serviceCollection"></param>
+    public override void Initialize(IServiceCollectionSharing? serviceCollection)
     {
-        #region IController
-
-        /// <summary>
-        /// 初期化
-        /// </summary>
-        /// <param name="serviceCollection"></param>
-        public override void Initialize(IServiceCollectionSharing? serviceCollection)
+        try
         {
-            try
+            base.Initialize(serviceCollection);
+        }
+        catch (Exception ex)
+        {
+            Serilog.Log.Warning(ex, ex.Message);
+        }
+    }
+
+    /// <summary>
+    /// パラメーター設定
+    /// </summary>
+    /// <param name="parameter"></param>
+    public override void SetParameter(IControllerParameter? parameter)
+    {
+        try
+        {
+            base.SetParameter(parameter);
+            if (parameter is ITextMessengerParameter p)
             {
-                base.Initialize(serviceCollection);
-            }
-            catch (Exception ex)
-            {
-                Serilog.Log.Warning(ex, ex.Message);
+                this.Parameter = p;
             }
         }
-
-        /// <summary>
-        /// パラメーター設定
-        /// </summary>
-        /// <param name="parameter"></param>
-        public override void SetParameter(IControllerParameter? parameter)
+        catch (Exception ex)
         {
-            try
+            Serilog.Log.Warning(ex, ex.Message);
+        }
+    }
+
+    /// <summary>
+    /// オープン
+    /// </summary>
+    /// <returns></returns>
+    public override bool Open()
+    {
+        try
+        {
+            if (this.Parameter is MqttTextMessengerParameter p)
             {
-                base.SetParameter(parameter);
-                if (parameter is ITextMessengerParameter p)
+                if (false == (this.MqttClient?.IsConnected ?? false))
                 {
-                    this.Parameter = p;
+                    var path = Path.Combine(this.PathManager?.Root?.FullName ?? AppDomain.CurrentDomain.BaseDirectory, "mqtt");
+
+                    var clientCert = new X509Certificate2(Path.Combine(path, p.FileNameOfClientCA), p.PasswordOfClientCA);
+                    var rootCa = X509Certificate.CreateFromCertFile(Path.Combine(path, p.FileNameOfRootCA));
+
+                    this.MqttClient = new MqttClient(p.EndpointHost, p.EndpointPort, true, rootCa, clientCert, MqttSslProtocols.TLSv1_2);
+
+                    this.MqttClient.Connect(p.DeviceUuid);
                 }
             }
-            catch (Exception ex)
-            {
-                Serilog.Log.Warning(ex, ex.Message);
-            }
+        }
+        catch (Exception ex)
+        {
+            this.MqttClient = null;
+            Serilog.Log.Warning(ex, ex.Message);
         }
 
-        /// <summary>
-        /// オープン
-        /// </summary>
-        /// <returns></returns>
-        public override bool Open()
+        return this.Enabled;
+    }
+
+    /// <summary>
+    /// クローズ
+    /// </summary>
+    /// <returns></returns>
+    public override bool Close()
+    {
+        var isSuccess = true;
+
+        try
         {
-            try
+            this.MqttClient?.Disconnect();
+        }
+        catch (Exception ex)
+        {
+            Serilog.Log.Warning(ex, ex.Message);
+        }
+        finally
+        {
+            this.MqttClient = null;
+        }
+
+        return isSuccess;
+    }
+
+    #endregion
+
+    #region IConnection
+
+    /// <summary>
+    /// 有効かどうか
+    /// </summary>
+    /// <remarks>Open済みか</remarks>
+    public bool Enabled => this.MqttClient?.IsConnected ?? false;
+
+    /// <summary>
+    /// Insight連携タイプ
+    /// </summary>
+    public InsightLinkageType LinkageType => InsightLinkageType.TextMessaging;
+
+    #endregion
+
+    #region ITextMessenger
+
+    /// <summary>
+    /// テキストを送信する
+    /// </summary>
+    /// <param name="text"></param>
+    /// <returns></returns>
+    public virtual bool SendText(string text)
+    {
+        var isSuccess = this.Enabled;
+
+        try
+        {
+            #region バッファリング処理
+            lock (((ICollection)this.MessageSendingQueue).SyncRoot)
             {
-                if (this.Parameter is MqttTextMessengerParameter p)
+                try
                 {
-                    if (false == (this.MqttClient?.IsConnected ?? false))
+                    // キューの末尾に要求を追加する
+                    this.MessageSendingQueue.Enqueue(text);
+
+                    // 最大バッファリング数に制限する
+                    if (this.Parameter is MqttTextMessengerParameter param)
                     {
-                        var path = Path.Combine(this.PathManager?.Root?.FullName ?? AppDomain.CurrentDomain.BaseDirectory, "mqtt");
-
-                        var clientCert = new X509Certificate2(Path.Combine(path, p.FileNameOfClientCA), p.PasswordOfClientCA);
-                        var rootCa = X509Certificate.CreateFromCertFile(Path.Combine(path, p.FileNameOfRootCA));
-
-                        this.MqttClient = new MqttClient(p.EndpointHost, p.EndpointPort, true, rootCa, clientCert, MqttSslProtocols.TLSv1_2);
-
-                        this.MqttClient.Connect(p.Uuid);
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                this.MqttClient = null;
-                Serilog.Log.Warning(ex, ex.Message);
-            }
-
-            return this.Enabled;
-        }
-
-        /// <summary>
-        /// クローズ
-        /// </summary>
-        /// <returns></returns>
-        public override bool Close()
-        {
-            var isSuccess = true;
-
-            try
-            {
-                this.MqttClient?.Disconnect();
-            }
-            catch (Exception ex)
-            {
-                Serilog.Log.Warning(ex, ex.Message);
-            }
-            finally
-            {
-                this.MqttClient = null;
-            }
-
-            return isSuccess;
-        }
-
-        #endregion
-
-        #region IConnection
-
-        /// <summary>
-        /// 有効かどうか
-        /// </summary>
-        /// <remarks>Open済みか</remarks>
-        public bool Enabled => this.MqttClient?.IsConnected ?? false;
-
-        /// <summary>
-        /// Insight連携タイプ
-        /// </summary>
-        public InsightLinkageType LinkageType => InsightLinkageType.TextMessaging;
-
-        #endregion
-
-        #region ITextMessenger
-
-        /// <summary>
-        /// テキストを送信する
-        /// </summary>
-        /// <param name="text"></param>
-        /// <returns></returns>
-        public virtual bool SendText(string text)
-        {
-            var isSuccess = this.Enabled;
-
-            try
-            {
-                #region バッファリング処理
-                lock (((ICollection)this.MessageSendingQueue).SyncRoot)
-                {
-                    try
-                    {
-                        // キューの末尾に要求を追加する
-                        this.MessageSendingQueue.Enqueue(text);
-
-                        // 最大バッファリング数に制限する
-                        if (this.Parameter is MqttTextMessengerParameter param)
+                        // 最大バッファリング数を超過している場合
+                        while (param.MaximumNumberOfBuffers < this.MessageSendingQueue.Count)
                         {
-                            // 最大バッファリング数を超過している場合
-                            while (param.MaximumNumberOfBuffers < this.MessageSendingQueue.Count)
-                            {
-                                // 最古の要求を除外する
-                                var removedText = this.MessageSendingQueue.Dequeue();
+                            // 最古の要求を除外する
+                            var removedText = this.MessageSendingQueue.Dequeue();
 
-                                Serilog.Log.Warning($"mqtt buffer overflow, removed = {removedText}");
-                            }
+                            Serilog.Log.Warning($"mqtt buffer overflow, removed = {removedText}");
                         }
+                    }
 
-                        // 要素追加をイベント通知
-                        this.MessageSendingQueueEvent.Set();
-                    }
-                    catch (Exception ex)
-                    {
-                        Debug.WriteLine(this, ex.Message);
-                    }
+                    // 要素追加をイベント通知
+                    this.MessageSendingQueueEvent.Set();
                 }
-                #endregion
+                catch (Exception ex)
+                {
+                    Debug.WriteLine(this, ex.Message);
+                }
             }
-            catch (Exception ex)
-            {
-                isSuccess = false;
-                Serilog.Log.Warning(ex, ex.Message);
-            }
-
-            return isSuccess;
+            #endregion
+        }
+        catch (Exception ex)
+        {
+            isSuccess = false;
+            Serilog.Log.Warning(ex, ex.Message);
         }
 
-        #endregion
+        return isSuccess;
+    }
 
-        #region SafelyDisposable
+    #endregion
 
-        /// <summary>
-        /// リソースの解放
-        /// </summary>
-        protected override void DisposeExplicit()
+    #region SafelyDisposable
+
+    /// <summary>
+    /// リソースの解放
+    /// </summary>
+    protected override void DisposeExplicit()
+    {
+        try
         {
-            try
-            {
-                // スレッドの解放
-                this.MessageSendingThreadTerminateFlag = true;
-                this.MessageSendingQueueEvent.Set();
+            // スレッドの解放
+            this.MessageSendingThreadTerminateFlag = true;
+            this.MessageSendingQueueEvent.Set();
 
-                this.Close();
-            }
-            catch (Exception ex)
-            {
-                Serilog.Log.Warning(ex, ex.Message);
-            }
+            this.Close();
         }
-
-        #endregion
-
-        #region フィールド
-
-        /// <summary>
-        /// パラメータ
-        /// </summary>
-        protected IControllerParameter? Parameter;
-
-        /// <summary>
-        /// MQTTクライアント
-        /// </summary>
-        protected MqttClient? MqttClient;
-
-        /// <summary>
-        /// メッセージ送信スレッド
-        /// </summary>
-        protected Thread MessageSendingThread;
-        protected bool MessageSendingThreadTerminateFlag;
-
-        /// <summary>
-        /// キューイベント
-        /// </summary>
-        protected readonly AutoResetEvent MessageSendingQueueEvent;
-
-        /// <summary>
-        /// キュー
-        /// </summary>
-        protected readonly Queue<string> MessageSendingQueue;
-
-        private string? _InsightPath = null;
-        private bool IsValidOptionValues = true;
-
-        public void SetInsightPath(string path)
+        catch (Exception ex)
         {
-            this._InsightPath = path;
+            Serilog.Log.Warning(ex, ex.Message);
         }
+    }
 
-        #endregion
+    #endregion
 
-        #region コンストラクタ
+    #region フィールド
 
-        /// <summary>
-        /// コンストラクタ
-        /// </summary>
-        /// <param name="index"></param>
-        public MqttTextMessenger() : this(typeof(MqttTextMessenger).Name, -1)
+    /// <summary>
+    /// パラメータ
+    /// </summary>
+    protected IControllerParameter? Parameter;
+
+    /// <summary>
+    /// MQTTクライアント
+    /// </summary>
+    protected MqttClient? MqttClient;
+
+    /// <summary>
+    /// メッセージ送信スレッド
+    /// </summary>
+    protected Thread MessageSendingThread;
+    protected bool MessageSendingThreadTerminateFlag;
+
+    /// <summary>
+    /// キューイベント
+    /// </summary>
+    protected readonly AutoResetEvent MessageSendingQueueEvent;
+
+    /// <summary>
+    /// キュー
+    /// </summary>
+    protected readonly Queue<string> MessageSendingQueue;
+
+    private string? _insightPath = null;
+    private bool _isValidOptionValues = true;
+
+    public void SetInsightPath(string path)
+    {
+        _insightPath = path;
+    }
+
+    #endregion
+
+    #region コンストラクタ
+
+    /// <summary>
+    /// コンストラクタ
+    /// </summary>
+    /// <param name="index"></param>
+    public MqttTextMessenger() : this(typeof(MqttTextMessenger).Name, -1)
+    {
+    }
+
+    /// <summary>
+    /// コンストラクタ
+    /// </summary>
+    /// <param name="index"></param>
+    public MqttTextMessenger(string nickname, int index = -1) : base(nickname, index)
+    {
+        // キューの生成
+        this.MessageSendingQueue = new Queue<string>();
+
+        // キュー操作イベントの生成
+        this.MessageSendingQueueEvent = new AutoResetEvent(false);
+
+        // スレッドの生成
+        this.MessageSendingThreadTerminateFlag = false;
+        this.MessageSendingThread = new Thread(this.ThreadProcess)
         {
-        }
+            IsBackground = true
+        };
+        this.MessageSendingThread.Start();
+    }
 
-        /// <summary>
-        /// コンストラクタ
-        /// </summary>
-        /// <param name="index"></param>
-        public MqttTextMessenger(string nickname, int index = -1) : base(nickname, index)
+    #endregion
+
+    /// <summary>
+    /// スレッド処理
+    /// </summary>
+    protected virtual void ThreadProcess()
+    {
+        try
         {
-            // キューの生成
-            this.MessageSendingQueue = new Queue<string>();
-
-            // キュー操作イベントの生成
-            this.MessageSendingQueueEvent = new AutoResetEvent(false);
-
-            // スレッドの生成
-            this.MessageSendingThreadTerminateFlag = false;
-            this.MessageSendingThread = new Thread(this.ThreadProcess)
+            // 終了指示があるまで繰り返し処理
+            while (false == this.MessageSendingThreadTerminateFlag)
             {
-                IsBackground = true
-            };
-            this.MessageSendingThread.Start();
-        }
+                // イベント待ち
+                this.MessageSendingQueueEvent.WaitOne();
 
-        #endregion
+                // 終了指示がある場合
+                if (true == this.MessageSendingThreadTerminateFlag)
+                {
+                    // 中断
+                    break;
+                }
 
-        /// <summary>
-        /// スレッド処理
-        /// </summary>
-        protected virtual void ThreadProcess()
-        {
-            try
-            {
                 // 終了指示があるまで繰り返し処理
                 while (false == this.MessageSendingThreadTerminateFlag)
                 {
-                    // イベント待ち
-                    this.MessageSendingQueueEvent.WaitOne();
+                    var text = (string?)null;
 
-                    // 終了指示がある場合
-                    if (true == this.MessageSendingThreadTerminateFlag)
+                    // キューから送信データを取り出す
+                    lock (((ICollection)this.MessageSendingQueue).SyncRoot)
                     {
-                        // 中断
-                        break;
+                        if (0 < this.MessageSendingQueue.Count)
+                        {
+                            text = this.MessageSendingQueue.Dequeue();
+                        }
                     }
 
-                    // 終了指示があるまで繰り返し処理
-                    while (false == this.MessageSendingThreadTerminateFlag)
+                    // 送信データが存在する場合
+                    if (false == string.IsNullOrEmpty(text))
                     {
-                        var text = (string?)null;
-
-                        // キューから送信データを取り出す
-                        lock (((ICollection)this.MessageSendingQueue).SyncRoot)
+                        // 送信データのバリデーション
+                        var jsonObject = Newtonsoft.Json.Linq.JObject.Parse(text);
+                        var options = jsonObject["option"] as Newtonsoft.Json.Linq.JObject;
+                        if (options != null)
                         {
-                            if (0 < this.MessageSendingQueue.Count)
+                            foreach (var option in options.Properties())
                             {
-                                text = this.MessageSendingQueue.Dequeue();
+                                // クラス名のバリデーション
+                                string className = option.Name;
+                                if (!ValidateClassName(className))
+                                {
+                                    Serilog.Log.Warning($"Invalid character in class name: {className}, Stop sending mqtt text message.");
+                                    _isValidOptionValues = false;
+                                    break;
+                                }
+                                // 確率値の整数部分をチェックし、整数の場合に.0を付与
+                                if (decimal.TryParse(option.Value.ToString(), out decimal result) && result == Math.Truncate(result))
+                                {
+                                    option.Value = $"{result}.0";
+                                }
                             }
                         }
 
-                        // 送信データが存在する場合
-                        if (false == string.IsNullOrEmpty(text))
+                        #region mqttメッセージを送信する
+                        try
                         {
-                            // 送信データのバリデーション
-                            var jsonObject = Newtonsoft.Json.Linq.JObject.Parse(text);
-                            var options = jsonObject["option"] as Newtonsoft.Json.Linq.JObject;
-                            if (options != null)
+                            if (this.Parameter is MqttTextMessengerParameter p && p.IsUse && _isValidOptionValues)
                             {
-                                foreach (var option in options.Properties())
-                                {
-                                    // クラス名のバリデーション
-                                    string className = option.Name;
-                                    if (!ValidateClassName(className))
-                                    {
-                                        Serilog.Log.Warning($"Invalid character in class name: {className}, Stop sending mqtt text message.");
-                                        this.IsValidOptionValues = false;
-                                        break;
-                                    }
-                                    // 確率値の整数部分をチェックし、整数の場合に.0を付与
-                                    if (decimal.TryParse(option.Value.ToString(), out decimal result) && result == Math.Truncate(result))
-                                    {
-                                        option.Value = $"{result}.0";
-                                    }
-                                }
-                            }
+                                // トピックの生成
+                                var topicText = $"{p.Topic.Trim()}/{p.DeviceUuid}"; // mekikibaito/v1/<{device_uuid}> の形式
 
-                            #region mqttメッセージを送信する
-                            try
-                            {
-                                if (this.Parameter is MqttTextMessengerParameter p && p.IsUse && this.IsValidOptionValues)
+                                if (_insightPath == null)
                                 {
-                                    var topicText = p.Uuid.Trim();
-                                    if (false == string.IsNullOrEmpty(p.Topic.Trim()))
+                                    if (true == this.Open())
                                     {
-                                        topicText = $"{p.Topic.Trim()}/{topicText}";
-                                    }
-                                    if (this._InsightPath == null)
-                                    {
-                                        if (true == this.Open())
-                                        {
-                                            this.MqttClient?.Publish($"{topicText.ToLower()}", Encoding.UTF8.GetBytes($"{text.ToLower()}"), 1, false);
-                                            Serilog.Log.Debug($"mqtt send '{text.ToLower()}'");
-                                        }
-                                        else
-                                        {
-                                            Serilog.Log.Warning($"mqtt connection failed, {text.ToLower()}");
-                                        }
+                                        this.MqttClient?.Publish($"{topicText.ToLower()}", Encoding.UTF8.GetBytes($"{text.ToLower()}"), 1, false);
+                                        Serilog.Log.Debug($"mqtt send '{text.ToLower()}'");
                                     }
                                     else
                                     {
-                                        if (true == this.Open())
-                                        {
-                                            this.MqttClient?.Publish($"{topicText.ToLower()}", Encoding.UTF8.GetBytes($"{text.ToLower()}"), 1, false);
-                                            Serilog.Log.Debug($"mqtt send '{text.ToLower()}'");
-                                        }
-                                        else
-                                        {
-                                            Serilog.Log.Warning($"mqtt connection failed, {text.ToLower()}");
-                                        }
+                                        Serilog.Log.Warning($"mqtt connection failed, {text.ToLower()}");
+                                    }
+                                }
+                                else
+                                {
+                                    if (true == this.Open())
+                                    {
+                                        this.MqttClient?.Publish($"{topicText.ToLower()}", Encoding.UTF8.GetBytes($"{text.ToLower()}"), 1, false);
+                                        Serilog.Log.Debug($"mqtt send '{text.ToLower()}'");
+                                    }
+                                    else
+                                    {
+                                        Serilog.Log.Warning($"mqtt connection failed, {text.ToLower()}");
                                     }
                                 }
                             }
-                            catch (Exception ex)
-                            {
-                                Serilog.Log.Warning(ex, ex.Message);
-                            }
-                            #endregion
                         }
-                        // 送信データが存在しない場合
-                        else
+                        catch (Exception ex)
                         {
-                            // 中断して次のイベントシグナル待ち
-                            break;
+                            Serilog.Log.Warning(ex, ex.Message);
                         }
+                        #endregion
+                    }
+                    // 送信データが存在しない場合
+                    else
+                    {
+                        // 中断して次のイベントシグナル待ち
+                        break;
                     }
                 }
             }
-            catch (ThreadAbortException tae)
-            {
-                Serilog.Log.Warning(tae, tae.Message);
-            }
-            catch (Exception ex)
-            {
-                Serilog.Log.Warning(ex, ex.Message);
-            }
-            finally
-            {
-                this.MessageSendingQueueEvent.Close();
-            }
         }
-
-        /// </summary>
-        /// クラス名のバリデーション
-        /// </summary>
-        private static bool ValidateClassName(string className)
+        catch (ThreadAbortException tae)
         {
-            // クラス名にハイフン以外の特殊文字、大文字、スペースを許可しない
-            return !className.Any(char.IsUpper) &&
-                   !className.Any(c => char.IsWhiteSpace(c) || (char.IsPunctuation(c) && c != '-'));
+            Serilog.Log.Warning(tae, tae.Message);
         }
+        catch (Exception ex)
+        {
+            Serilog.Log.Warning(ex, ex.Message);
+        }
+        finally
+        {
+            this.MessageSendingQueueEvent.Close();
+        }
+    }
+
+    /// </summary>
+    /// クラス名のバリデーション
+    /// </summary>
+    private static bool ValidateClassName(string className)
+    {
+        // クラス名にハイフン以外の特殊文字、大文字、スペースを許可しない
+        return !className.Any(char.IsUpper) &&
+               !className.Any(c => char.IsWhiteSpace(c) || (char.IsPunctuation(c) && c != '-'));
     }
 }

@@ -1,0 +1,756 @@
+﻿<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="clr-namespace:Hutzper.Library.Wpf"
+    xmlns:conv="clr-namespace:Hutzper.Library.Wpf.Utils"
+    xmlns:sys="clr-namespace:System;assembly=mscorlib">
+
+    <FontFamily x:Key="DefaultFontFamily">pack://application:,,,/Hutzper.Library.Wpf;component/Resources/Fonts/#Noto Sans JP</FontFamily>
+
+    <!-- コンバーター-->
+    <conv:FontSizeTypeConverter x:Key="FontSizeConverter"/>
+    <conv:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+    <conv:BooleanToTextWrappingConverter x:Key="BooleanToWrapConverter"/>
+    <conv:BooleanToScrollVisibilityConverter x:Key="BooleanToScrollVisibilityConverter"/>
+    <conv:BooleanToHeightConverter x:Key="BooleanToHeightConverter"/>
+    <conv:PointsConverter x:Key="PointsConverter"/>
+    <conv:ButtonSizeTypeConverter x:Key="ButtonSizeConverter"/>
+    <conv:WidthMinusStarConverter x:Key="WidthMinusStarConverter"/>
+
+    <!-- フォントサイズの定義 -->
+    <sys:Double x:Key="3Xs">8</sys:Double>
+    <sys:Double x:Key="2xs">12</sys:Double>
+    <sys:Double x:Key="Xs">16</sys:Double>
+    <sys:Double x:Key="Sm">20</sys:Double>
+    <sys:Double x:Key="Base">24</sys:Double>
+    <sys:Double x:Key="Lg">28</sys:Double>
+    <sys:Double x:Key="Xl">32</sys:Double>
+    <sys:Double x:Key="2xl">36</sys:Double>
+    <sys:Double x:Key="3xl">40</sys:Double>
+    <sys:Double x:Key="4xl">44</sys:Double>
+
+    <!-- ボタンサイズの定義 -->
+    <Size x:Key="sm" Width="73" Height="35"/>
+    <Size x:Key="base" Width="89" Height="43"/>
+    <Size x:Key="lg" Width="140" Height="74"/>
+    <Size x:Key="2xm" Width="65" Height="43"/>
+
+    <!-- LightテーマとDarkテーマの切り替えを実装する場合、Light.xamlとDark.xamlを用意して、色定義の各値をDynamicResourceで指定する 
+    具体的にはSolidColorBrushのColorの値をDynamicResourceで指定し、さらにそのSolidColorBrushをDynamicResourceで指定することで、色の切り替えを実現する 
+    アプリ側は、適当なボタン押下でthis.Resources.MergedDictionariesを切り替えられるように作っておく -->
+
+    <!-- Darkテーマの色定義 -->
+    <!-- 色の定義（Color） -->
+    <Color x:Key="MainColorValue">#F97134</Color>
+    <Color x:Key="MainColorHoveredValue">#FF5002</Color>
+    <Color x:Key="MainColorActiveValue">#E78C63</Color>
+    <Color x:Key="MainColorEditedValue">#F97134</Color>
+    <Color x:Key="BlackValue">#161616</Color>
+    <Color x:Key="WhiteValue">#F3F3F3</Color>
+    <Color x:Key="OKColorValue">#589A52</Color>
+    <Color x:Key="NGColorValue">#EA3323</Color>
+    <Color x:Key="IOColorValue">#8D8700</Color>
+    <Color x:Key="DisableColorValue">#A7A7A7</Color>
+    <Color x:Key="ErrorColorValue">#FECACA</Color>
+    <Color x:Key="ErrorBorderColorValue">#EF4444</Color>
+    <Color x:Key="ChangeColorValue">#f97134</Color>
+
+    <!-- ブラシの定義（SolidColorBrush） -->
+    <SolidColorBrush x:Key="MainColor"
+                 Color="{StaticResource MainColorValue}"/>
+    <SolidColorBrush x:Key="MainColorHovered"
+                 Color="{StaticResource MainColorHoveredValue}"/>
+    <SolidColorBrush x:Key="MainColorActive"
+                 Color="{StaticResource MainColorActiveValue}"/>
+    <SolidColorBrush x:Key="MainColorEdited"
+                 Color="{StaticResource MainColorEditedValue}"
+                 Opacity="0.2"/>
+    <SolidColorBrush x:Key="Black"
+                 Color="{StaticResource BlackValue}"/>
+    <SolidColorBrush x:Key="White"
+                 Color="{StaticResource WhiteValue}"/>
+    <SolidColorBrush x:Key="OKColor"
+                 Color="{StaticResource OKColorValue}"/>
+    <SolidColorBrush x:Key="NGColor"
+                 Color="{StaticResource NGColorValue}"/>
+    <SolidColorBrush x:Key="IOColor"
+                 Color="{StaticResource IOColorValue}"/>
+    <SolidColorBrush x:Key="DisableColor"
+                 Color="{StaticResource DisableColorValue}"/>
+    <SolidColorBrush x:Key="ErrorColor"
+                Color="{StaticResource ErrorColorValue}"/>
+    <SolidColorBrush x:Key="ChangeColorColor"
+               Color="{StaticResource ChangeColorValue}"/>
+
+    <!-- これ以下はLight.xamlとDark.xamlに定義する -->
+    <SolidColorBrush x:Key="FontColor"
+                     Color="#161616"/>
+    <SolidColorBrush x:Key="ButtonLabelColor"
+                     Color="#F3F3F3"/>
+    <SolidColorBrush x:Key="TitleBarColor"
+                     Color="#161616"/>
+
+    <SolidColorBrush x:Key="BackgroundColor"
+                     Color="#F3F3F3"/>
+    <SolidColorBrush x:Key="ForegroundColor"
+                     Color="#F3F3F3"/>
+
+    <!-- Windowのデフォルトスタイルを設定 (Style TargetType="Window"で自動適用しようとしても上手く行かない)-->
+    <Style x:Key="Default"
+           TargetType="Window">
+        <Setter Property="FontFamily"
+                Value="{StaticResource DefaultFontFamily}"/>
+        <Setter Property="FontSize"
+                Value="{StaticResource Base}"/>
+        <Setter Property="FontWeight"
+                Value="Regular"/>
+        <Setter Property="Background"
+                Value="#F3F3F3"/>
+    </Style>
+
+    <Style TargetType="Label">
+        <Setter Property="Foreground"
+                Value="{StaticResource FontColor}"/>
+    </Style>
+
+    <ObjectDataProvider x:Key="ColorDataSource"
+                        ObjectType="{x:Type sys:Enum}"
+                        MethodName="GetValues">
+        <ObjectDataProvider.MethodParameters>
+            <x:Type TypeName="local:SettingEnums+ColorType" />
+        </ObjectDataProvider.MethodParameters>
+    </ObjectDataProvider>
+    <ObjectDataProvider x:Key="FontSizeDataSource"
+                     ObjectType="{x:Type sys:Enum}"
+                     MethodName="GetValues">
+        <ObjectDataProvider.MethodParameters>
+            <x:Type TypeName="local:SettingEnums+FontSizeType" />
+        </ObjectDataProvider.MethodParameters>
+    </ObjectDataProvider>
+    <ObjectDataProvider x:Key="ButtonSizeDataSource"
+                   ObjectType="{x:Type sys:Enum}"
+                   MethodName="GetValues">
+        <ObjectDataProvider.MethodParameters>
+            <x:Type TypeName="local:SettingEnums+ButtonSizeType" />
+        </ObjectDataProvider.MethodParameters>
+    </ObjectDataProvider>
+
+    <!-- Button のスタイル -->
+    <Style TargetType="{x:Type local:Button}">
+        <Setter Property="OverridesDefaultStyle"
+            Value="True"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type local:Button}">
+                    <Grid x:Name="buttonGrid" Width="{Binding ButtonSize, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource ButtonSizeConverter}, ConverterParameter=Width}"
+                            Height="{Binding ButtonSize, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource ButtonSizeConverter}, ConverterParameter=Height}">
+                        <!-- Primary - 通常状態 -->
+                        <Border x:Name="primaryBorder"
+                        CornerRadius="6"
+                        Visibility="Collapsed">
+                            <Border.Background>
+                                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                    <!-- 左上 (明るいオレンジ) -->
+                                    <GradientStop Offset="0.0" Color="#FF8D52"/>
+                                    <!-- メインカラー (中間) -->
+                                    <GradientStop Offset="0.3" Color="{StaticResource MainColorValue}"/>
+                                    <!-- 右下 (暗いオレンジ) -->
+                                    <GradientStop Offset="1.0" Color="#C75000"/>
+                                </LinearGradientBrush>
+                            </Border.Background>
+
+                            <!-- 右下にかけて暗くなる微妙な影を追加するためのオーバーレイ -->
+                            <Border.Effect>
+                                <DropShadowEffect BlurRadius="8" 
+                                          Direction="315" 
+                                          ShadowDepth="0" 
+                                          Color="#50000000" 
+                                          Opacity="0.5"/>
+                            </Border.Effect>
+                        </Border>
+
+                        <!-- Primary - ホバー状態 -->
+                        <Border x:Name="hoverBorder"
+                            CornerRadius="6"
+                            Visibility="Collapsed">
+                            <Border.Background>
+                                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                    <!-- 左上 (明るいホバーオレンジ) -->
+                                    <GradientStop Offset="0.0" Color="#FF9D62"/>
+                                    <!-- メインカラー (中間) -->
+                                    <GradientStop Offset="0.3" Color="{StaticResource MainColorHoveredValue}"/>
+                                    <!-- 右下 (暗いホバーオレンジ) -->
+                                    <GradientStop Offset="1.0" Color="#B04000"/>
+                                </LinearGradientBrush>
+                            </Border.Background>
+
+                            <Border.Effect>
+                                <DropShadowEffect BlurRadius="8" 
+                                          Direction="315" 
+                                          ShadowDepth="0" 
+                                          Color="#50000000" 
+                                          Opacity="0.5"/>
+                            </Border.Effect>
+                        </Border>
+
+                        <!-- Primary - 押下状態 -->
+                        <Border x:Name="pressedBorder"
+                            CornerRadius="6"
+                            Background="{StaticResource MainColorActive}"
+                            Visibility="Collapsed"/>
+
+                        <!-- Outline状態 -->
+                        <Border x:Name="outlineBorder"
+                            CornerRadius="6"
+                            Background="Transparent"
+                            BorderThickness="2"
+                            BorderBrush="{StaticResource MainColor}"
+                            Visibility="Collapsed"/>
+
+                        <!-- コンテンツ - TextBlockでテキスト色を確実に設定 -->
+                        <TextBlock x:Name="contentText"
+                           Text="{TemplateBinding Content}"
+                           Foreground="{TemplateBinding Foreground}"
+                           FontWeight="{TemplateBinding FontWeight}"
+                           FontSize="{Binding TextFontSize, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource FontSizeConverter}}"
+                           HorizontalAlignment="Center"
+                           VerticalAlignment="Center"
+                           Margin="12,12"/>
+                    </Grid>
+
+                    <ControlTemplate.Triggers>
+                        <!-- ===================== -->
+                        <!-- 1) 通常時 (Color別) -->
+                        <!-- ===================== -->
+                        <!-- Primary -->
+                        <Trigger Property="Color"
+                            Value="Primary">
+                            <!-- 通常時の見た目 -->
+                            <Setter TargetName="primaryBorder"
+                                Property="Visibility"
+                                Value="Visible"/>
+                            <Setter Property="Foreground"
+                                Value="White"/>
+                        </Trigger>
+
+                        <!-- Outline -->
+                        <Trigger Property="Color"
+                         Value="Outline">
+                            <!-- 通常時の見た目 -->
+                            <Setter TargetName="outlineBorder"
+                                Property="Visibility"
+                                Value="Visible"/>
+                            <Setter Property="Foreground"
+                                Value="{StaticResource MainColor}"/>
+                        </Trigger>
+
+                        <!-- ====================== -->
+                        <!-- 2) ホバー / クリック時 -->
+                        <!-- ====================== -->
+
+                        <!-- Color=Primary && IsMouseOver -->
+                        <MultiTrigger>
+                            <MultiTrigger.Conditions>
+                                <Condition Property="Color"
+                                   Value="Primary"/>
+                                <Condition Property="IsMouseOver"
+                                   Value="True"/>
+                            </MultiTrigger.Conditions>
+                            <Setter TargetName="primaryBorder"
+                                Property="Visibility"
+                                Value="Collapsed"/>
+                            <Setter TargetName="hoverBorder"
+                                Property="Visibility"
+                                Value="Visible"/>
+                        </MultiTrigger>
+
+                        <!-- Color=Primary && IsPressed -->
+                        <MultiTrigger>
+                            <MultiTrigger.Conditions>
+                                <Condition Property="Color"
+                                   Value="Primary"/>
+                                <Condition Property="IsPressed"
+                                   Value="True"/>
+                            </MultiTrigger.Conditions>
+                            <Setter TargetName="primaryBorder"
+                                Property="Visibility"
+                                Value="Collapsed"/>
+                            <Setter TargetName="hoverBorder"
+                                Property="Visibility"
+                                Value="Collapsed"/>
+                            <Setter TargetName="pressedBorder"
+                                Property="Visibility"
+                                Value="Visible"/>
+                        </MultiTrigger>
+
+                        <!-- Color=Outline && IsMouseOver -->
+                        <MultiTrigger>
+                            <MultiTrigger.Conditions>
+                                <Condition Property="Color"
+                                   Value="Outline"/>
+                                <Condition Property="IsMouseOver"
+                                   Value="True"/>
+                            </MultiTrigger.Conditions>
+                            <!-- 背景はTransparentのまま -->
+                            <Setter TargetName="outlineBorder"
+                                Property="BorderBrush"
+                                Value="{StaticResource MainColorHovered}"/>
+                            <!-- 文字色だけ変える -->
+                            <Setter Property="Foreground"
+                                Value="{StaticResource MainColorHovered}"/>
+                        </MultiTrigger>
+
+                        <!-- Color=Outline && IsPressed -->
+                        <MultiTrigger>
+                            <MultiTrigger.Conditions>
+                                <Condition Property="Color"
+                                   Value="Outline"/>
+                                <Condition Property="IsPressed"
+                                   Value="True"/>
+                            </MultiTrigger.Conditions>
+                            <!-- 背景はTransparentのまま -->
+                            <Setter TargetName="outlineBorder"
+                                Property="BorderBrush"
+                                Value="{StaticResource MainColorActive}"/>
+                            <!-- 文字色だけ変える -->
+                            <Setter Property="Foreground"
+                                Value="{StaticResource MainColorActive}"/>
+                        </MultiTrigger>
+
+                        <!-- ===================== -->
+                        <!-- 3) Disabled (IsEnabled=False) -->
+                        <!-- ===================== -->
+                        <Trigger Property="IsEnabled"
+                         Value="False">
+                            <Setter Property="Opacity"
+                            Value="0.2"/>
+                        </Trigger>
+
+                        <!-- 幅Auto用トリガー -->
+                        <Trigger Property="IsWidthAuto" Value="True">
+                            <Setter TargetName="buttonGrid" Property="Width" Value="Auto"/>
+                            <Setter TargetName="buttonGrid" Property="MinWidth" Value="{Binding ButtonSize, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource ButtonSizeConverter}, ConverterParameter=Width}"/>
+                            <!-- 必要に応じて最小幅を設定 -->
+                        </Trigger>
+
+                        <!-- 高さAuto用トリガー -->
+                        <Trigger Property="IsHeightAuto" Value="True">
+                            <Setter TargetName="buttonGrid" Property="Height" Value="Auto"/>
+                            <Setter TargetName="buttonGrid" Property="MinHeight" Value="{Binding ButtonSize, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource ButtonSizeConverter}, ConverterParameter=Height}"/>
+                            <!-- 必要に応じて最小高さを設定 -->
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- ラジオボタン -->
+    <Style TargetType="{x:Type local:RadioButton}">
+        <Setter Property="OverridesDefaultStyle"
+            Value="True"/>
+        <Setter Property="Foreground"
+                Value="{StaticResource FontColor}"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type local:RadioButton}">
+                    <BulletDecorator>
+                        <!-- ラジオボタン左側の丸部分 -->
+                        <BulletDecorator.Bullet>
+                            <Grid VerticalAlignment="Center">
+                                <!-- 外側の円 (枠) -->
+                                <Border x:Name="OuterCircle"
+                                        Width="32"
+                                        Height="32"
+                                        CornerRadius="16"
+                                        Background="#C1C1C1"
+                                        VerticalAlignment="Center"
+                                        HorizontalAlignment="Center"/>
+                                <!-- 内側の小さい円 (選択中だけ表示) -->
+                                <Ellipse x:Name="InnerCircle"
+                                         Width="16"
+                                         Height="16"
+                                         Fill="{StaticResource MainColor}"
+                                         Visibility="Collapsed"
+                                         VerticalAlignment="Center"
+                                         HorizontalAlignment="Center"/>
+                            </Grid>
+                        </BulletDecorator.Bullet>
+
+                        <!-- コンテンツ (RadioButton の Content など) -->
+                        <ContentPresenter Margin="8,0,0,0"
+                                          VerticalAlignment="Center"
+                                          TextElement.FontSize="{Binding TextFontSize, 
+                                                           RelativeSource={RelativeSource TemplatedParent}, 
+                                                           Converter={StaticResource FontSizeConverter}}"/>
+                    </BulletDecorator>
+
+                    <ControlTemplate.Triggers>
+                        <!-- チェックされている場合、内側の丸を表示 -->
+                        <Trigger Property="IsChecked"
+                                 Value="True">
+                            <Setter TargetName="InnerCircle"
+                                    Property="Visibility"
+                                    Value="Visible"/>
+                        </Trigger>
+
+                        <!-- 無効状態の場合、全体を半透明に -->
+                        <Trigger Property="IsEnabled"
+                                 Value="False">
+                            <Setter Property="Opacity"
+                                    Value="0.5"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="ToggleSwitchStyle" TargetType="local:ToggleButton">
+        <Setter Property="OverridesDefaultStyle"
+            Value="True"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ToggleButton">
+                    <Grid Width="auto" Height="32">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="auto"/>
+                            <ColumnDefinition Width="44"/>
+                            <ColumnDefinition Width="auto"/>
+                        </Grid.ColumnDefinitions>
+
+                        <!-- OFFテキスト - 左側 -->
+                        <TextBlock Grid.Column="0"
+                               Text="{Binding OffText, RelativeSource={RelativeSource TemplatedParent}}"
+                               Foreground="{StaticResource FontColor}"
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center"
+                               Padding="10,5,10,5"
+                               FontSize="{Binding OffTextFontSize, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource FontSizeConverter}}"/>
+
+                        <!-- 中央のトラック部分とノブ -->
+                        <Grid Grid.Column="1" Height="28" VerticalAlignment="Center">
+                            <!-- 背景トラック部分 -->
+                            <Border x:Name="Track"
+                                Height="20"
+                                CornerRadius="10"
+                                Background="#DDDDDD"
+                                VerticalAlignment="Center"/>
+
+                            <!-- スライダーノブ -->
+                            <Border x:Name="Thumb"
+                                Width="18" Height="18"
+                                CornerRadius="9"
+                                Background="White"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Center"
+                                Margin="2,0,0,0">
+                                <Border.Effect>
+                                    <DropShadowEffect BlurRadius="2"
+                                                 ShadowDepth="1"
+                                                 Opacity="0.2"/>
+                                </Border.Effect>
+                            </Border>
+                        </Grid>
+
+                        <!-- ONテキスト - 右側 -->
+                        <TextBlock Grid.Column="2"
+                               Text="{Binding OnText, RelativeSource={RelativeSource TemplatedParent}}"
+                               Foreground="{StaticResource FontColor}"
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center"
+                               Padding="10,5,10,5"
+                               FontSize="{Binding OnTextFontSize, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource FontSizeConverter}}"/>
+                    </Grid>
+
+                    <!-- アニメーショントリガー - 変更なし -->
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsChecked" Value="True">
+                            <Trigger.EnterActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <ThicknessAnimation 
+                                        Storyboard.TargetName="Thumb"
+                                        Storyboard.TargetProperty="Margin"
+                                        To="24,0,0,0"
+                                        Duration="0:0:0.2">
+                                            <ThicknessAnimation.EasingFunction>
+                                                <CubicEase EasingMode="EaseOut"/>
+                                            </ThicknessAnimation.EasingFunction>
+                                        </ThicknessAnimation>
+                                        <ColorAnimation 
+                                        Storyboard.TargetName="Track"
+                                        Storyboard.TargetProperty="(Border.Background).(SolidColorBrush.Color)"
+                                        To="{StaticResource MainColorValue}"
+                                        Duration="0:0:0.2"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </Trigger.EnterActions>
+                            <Trigger.ExitActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <ThicknessAnimation 
+                                        Storyboard.TargetName="Thumb"
+                                        Storyboard.TargetProperty="Margin"
+                                        To="2,0,0,0"
+                                        Duration="0:0:0.2">
+                                            <ThicknessAnimation.EasingFunction>
+                                                <CubicEase EasingMode="EaseOut"/>
+                                            </ThicknessAnimation.EasingFunction>
+                                        </ThicknessAnimation>
+                                        <ColorAnimation 
+                                        Storyboard.TargetName="Track"
+                                        Storyboard.TargetProperty="(Border.Background).(SolidColorBrush.Color)"
+                                        To="#DDDDDD"
+                                        Duration="0:0:0.2"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </Trigger.ExitActions>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style TargetType="{x:Type local:ComboBox}">
+        <!-- テンプレートを再定義する場合は OverridesDefaultStyle を True にしておくと安心 -->
+        <Setter Property="OverridesDefaultStyle"
+            Value="True"/>
+        <!-- 幅や高さ、その他のデフォルト設定 -->
+        <Setter Property="MinWidth"
+            Value="120"/>
+        <!-- ドロップダウンアイテムの色 -->
+        <Setter Property="ItemContainerStyle">
+            <Setter.Value>
+                <Style TargetType="{x:Type ComboBoxItem}">
+                    <Setter Property="Foreground" Value="{StaticResource FontColor}"/>
+                    <!-- ドロップダウンアイテムの色 -->
+                </Style>
+            </Setter.Value>
+        </Setter>
+        <!-- ControlTemplate で見た目を作り込む -->
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type local:ComboBox}">
+                    <!-- Border要素の背景に、TemplateBindingを使用して親のBackgroundを参照 -->
+                    <Border x:Name="Border"
+                        Padding="5"
+                        Background="{TemplateBinding Background}">
+                        <Grid>
+                            <!-- 選択中アイテムの表示部分 -->
+                            <ContentPresenter x:Name="ContentSite"
+                                          Margin="4,3,24,3"
+                                          VerticalAlignment="Center"
+                                          HorizontalAlignment="Left"
+                                          Content="{TemplateBinding SelectionBoxItem}"
+                                          ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}"
+                                          RecognizesAccessKey="True"/>
+
+                            <!-- ▼ボタン (ドロップダウン展開をトグルする) -->
+                            <ToggleButton x:Name="ToggleButton"
+                                      BorderThickness="0"
+                                      Background="Transparent"
+                                      HorizontalAlignment="Right"
+                                      VerticalAlignment="Center"
+                                      Margin="0,2,2,2"
+                                      IsChecked="{Binding IsDropDownOpen, 
+                                        RelativeSource={RelativeSource TemplatedParent}, 
+                                        Mode=TwoWay}"
+                                      ClickMode="Press">
+                                <Path
+                                Width="14"
+                                Height="14"
+                                Stretch="Uniform"
+                                Fill="#161616"
+                                Data="M14.4297 17.4615 L7.42969 10.4615 L9.06302 8.82812 
+                                      L14.4297 14.1948 L19.7964 8.82812 L21.4297 10.4615 
+                                      L14.4297 17.4615 Z"/>
+                            </ToggleButton>
+
+                            <!-- ポップアップ (ドロップダウンリスト) -->
+                            <Popup x:Name="Popup"
+                               IsOpen="{TemplateBinding IsDropDownOpen}"
+                               Placement="Bottom"
+                               AllowsTransparency="True"
+                               Focusable="False"
+                               PopupAnimation="Slide">
+                                <Border x:Name="DropDownBorder"
+                                    Background="{TemplateBinding Background}"
+                                    MinWidth="{Binding ActualWidth,
+                                          RelativeSource={RelativeSource TemplatedParent}}">
+                                    <!-- ItemsHost: コンボボックスのアイテムを配置する領域 -->
+                                    <ScrollViewer x:Name="DropDownScrollViewer">
+                                        <StackPanel IsItemsHost="True"/>
+                                    </ScrollViewer>
+                                </Border>
+                            </Popup>
+                        </Grid>
+                    </Border>
+
+                    <!-- 状態に応じた見た目の変化 -->
+                    <ControlTemplate.Triggers>
+                        <!-- 無効化されたとき -->
+                        <Trigger Property="IsEnabled"
+                             Value="False">
+                            <Setter TargetName="Border"
+                                Property="Background"
+                                Value="#FFC0C0C0"/>
+                            <Setter Property="Foreground"
+                                Value="#FF707070"/>
+                        </Trigger>
+
+                        <!-- Hover時の色変更 -->
+                        <Trigger Property="IsMouseOver" 
+                             Value="True">
+                            <Setter TargetName="Border"
+                                Property="BorderBrush" 
+                                Value="#AAAAAA"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+
+        <!-- デフォルトの背景色 -->
+        <Setter Property="Background" Value="#C1C1C1"/>
+    </Style>
+
+    <!-- テキストボックス -->
+    <Style TargetType="{x:Type local:TextBox}">
+         <Setter Property="OverridesDefaultStyle"
+            Value="True"/>
+        <Setter Property="Background" Value="#C2C2C2"/>
+        <Setter Property="Foreground" Value="{StaticResource FontColor}"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="Padding" Value="6,6"/>
+        <Setter Property="FontSize" Value="{Binding TextFontSize, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource FontSizeConverter}}"/>
+        <Setter Property="FontFamily" Value="{StaticResource DefaultFontFamily}"/>
+        <Setter Property="AcceptsReturn" Value="{Binding IsMultiline, RelativeSource={RelativeSource Self}}"/>
+        <Setter Property="TextWrapping" Value="{Binding IsMultiline, RelativeSource={RelativeSource Self}, Converter={StaticResource BooleanToWrapConverter}}" />
+        <Setter Property="VerticalScrollBarVisibility" Value="{Binding IsMultiline, RelativeSource={RelativeSource Self}, Converter={StaticResource  BooleanToScrollVisibilityConverter}}" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type local:TextBox}">
+                    <!-- テキストボックス本体 -->
+                    <Border x:Name="outerBorder" 
+                        Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}"
+                        SnapsToDevicePixels="True">
+                        <Grid>
+                            <!-- 内側の影の効果 - 交差しないように調整 -->
+                            <!-- 上部の影 - 左右側にマージンを設定して左辺の影との重なりを防ぐ -->
+                            <Border x:Name="TopShadow" 
+                                Height="4" 
+                                VerticalAlignment="Top" 
+                                Background="#33000000"
+                                Margin="4,0,0,4" />
+
+                            <!-- 左辺の影 -->
+                            <Border x:Name="LeftShadow" 
+                                    Width="4" 
+                                    HorizontalAlignment="Left" 
+                                    Background="#33000000"
+                                    Margin="0,0,0,0" />
+
+                            <!-- 右辺の影 - -->
+                            <Border x:Name="RightShadow" 
+                                Width="4" 
+                                HorizontalAlignment="Right" 
+                                Background="Transparent"
+                                Margin="0,0,0,0" />
+
+                            <!-- 下辺の影 - -->
+                            <Border x:Name="BottomShadow" 
+                                Height="4" 
+                                VerticalAlignment="Bottom" 
+                                Background="Transparent"
+                                Margin="4,0,4,0" />
+
+                            <!-- テキスト表示部分 -->
+                            <ScrollViewer x:Name="PART_ContentHost" 
+                                    Focusable="False" 
+                                    HorizontalScrollBarVisibility="Hidden" 
+                                    VerticalScrollBarVisibility="Hidden"
+                                    Margin="{TemplateBinding Padding}"
+                                    FontSize="{TemplateBinding FontSize}"
+                                    VerticalAlignment="Center" />
+                        </Grid>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <!-- 変更状態のトリガー -->
+                        <Trigger Property="IsModified" Value="True">
+                            <Setter TargetName="outerBorder" Property="Background">
+                                <Setter.Value>
+                                    <SolidColorBrush Color="{StaticResource ChangeColorValue}" Opacity="0.2"/>
+                                </Setter.Value>
+                            </Setter>
+                        </Trigger>
+                        
+                        <!-- エラー状態のトリガー -->
+                        <Trigger Property="HasError" Value="True">
+                            <Setter TargetName="outerBorder" Property="Background">
+                                <Setter.Value>
+                                    <SolidColorBrush Color="{StaticResource ErrorColorValue}"/>
+                                </Setter.Value>
+                            </Setter>
+                            <!-- 上部の影の色を変更 -->
+                            <Setter TargetName="TopShadow" Property="Background">
+                                <Setter.Value>
+                                    <SolidColorBrush Color="{StaticResource ErrorBorderColorValue}"/>
+                                </Setter.Value>
+                            </Setter>
+
+                            <!-- 左辺の影の色を変更 -->
+                            <Setter TargetName="LeftShadow" Property="Background">
+                                <Setter.Value>
+                                    <SolidColorBrush Color="{StaticResource ErrorBorderColorValue}"/>
+                                </Setter.Value>
+                            </Setter>
+
+                            <!-- 右辺の影の色を変更 -->
+                            <Setter TargetName="RightShadow" Property="Background">
+                                <Setter.Value>
+                                    <SolidColorBrush Color="{StaticResource ErrorBorderColorValue}"/>
+                                </Setter.Value>
+                            </Setter>
+
+                            <!-- 下辺の影の色を変更 -->
+                            <Setter TargetName="BottomShadow" Property="Background">
+                                <Setter.Value>
+                                    <SolidColorBrush Color="{StaticResource ErrorBorderColorValue}"/>
+                                </Setter.Value>
+                            </Setter>
+                        </Trigger>
+
+                        <!-- フォーカス時のトリガー -->
+                        <Trigger Property="IsFocused" Value="True">
+                            <Setter TargetName="outerBorder" Property="Background" Value="#D1D1D1"/>
+                        </Trigger>
+
+                        <!-- 無効状態のトリガー -->
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter Property="Opacity" Value="0.5"/>
+                        </Trigger>
+
+                        <!-- マウスオーバー時のトリガー -->
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="outerBorder" Property="Background" Value="#D1D1D1"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- TextBlockのスタイル -->
+    <Style TargetType="TextBlock">
+        <Setter Property="Foreground" Value="{StaticResource FontColor}"/>
+        <Setter Property="FontSize" Value="{StaticResource Base}"/>
+        <Setter Property="FontFamily" Value="{StaticResource DefaultFontFamily}"/>
+        <Setter Property="TextWrapping" Value="NoWrap"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
+    </Style>
+
+</ResourceDictionary>

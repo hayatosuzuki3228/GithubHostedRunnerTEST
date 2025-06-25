@@ -65,7 +65,7 @@
         public ConfirmationForm(IServiceCollectionSharing? serviceCollectionSharing) : base(serviceCollectionSharing)
         {
             // コンポーネントを初期化する
-            InitializeComponent();
+            this.InitializeComponent();
 
             this.CloseButtonVisible = false;
             this.MinimizeButtonVisible = false;

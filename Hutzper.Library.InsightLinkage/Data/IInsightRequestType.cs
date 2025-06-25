@@ -1,8 +1,7 @@
-﻿namespace Hutzper.Library.InsightLinkage.Data
+﻿namespace Hutzper.Library.InsightLinkage.Data;
+
+public enum InsightRequestType
 {
-    public enum InsightRequestType
-    {
-        Inspection,
-        ImageCollection,
-    }
+    Inspection,
+    ImageCollection,
 }

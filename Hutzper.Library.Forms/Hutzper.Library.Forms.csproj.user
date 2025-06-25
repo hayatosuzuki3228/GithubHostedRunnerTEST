@@ -1,0 +1,57 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="Current" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup />
+  <ItemGroup>
+    <Compile Update="ConfirmationUserControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="Diagnostics\PlcDeviceMapControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="Diagnostics\PlcDiagnosticsControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="FloatingInputBoxForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="HutzperUserControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="ImageProcessing\HistogramUserControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="ImageView\ImageViewControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="ImageView\MultiImageViewControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="ServiceCollectionSharingBaseForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="ServiceCollectionSharingForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Setting\ColorSelectionUserControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="Setting\ComboBoxUserControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="Setting\DirectorySelectionUserControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="Setting\NumericUpDownUserControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="Setting\OnOffUserControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="Setting\TextBoxUserControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="TableViewRendererUserControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+  </ItemGroup>
+</Project>

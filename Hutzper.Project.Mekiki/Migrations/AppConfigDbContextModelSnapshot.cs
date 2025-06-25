@@ -88,6 +88,67 @@ namespace Hutzper.Project.Mekiki.Migrations
 
                     b.ToTable("Config", (string)null);
                 });
+
+            modelBuilder.Entity("Hutzper.Project.Mekiki.Models.Config.InspectionUnit", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("AppConfigId")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime?>("CreatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("text")
+                        .HasColumnName("description");
+
+                    b.Property<int>("DisplayOrder")
+                        .HasColumnType("integer")
+                        .HasColumnName("display_order");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("name");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AppConfigId");
+
+                    b.HasIndex("DisplayOrder")
+                        .IsUnique();
+
+                    b.ToTable("Inspection_unit", null, t =>
+                        {
+                            t.HasCheckConstraint("CK_Inspection_DisplayOrder_Enum", "display_order >= 0");
+                        });
+                });
+
+            modelBuilder.Entity("Hutzper.Project.Mekiki.Models.Config.InspectionUnit", b =>
+                {
+                    b.HasOne("Hutzper.Project.Mekiki.Models.Config.AppConfig", "AppConfig")
+                        .WithMany("inspectionUnits")
+                        .HasForeignKey("AppConfigId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("AppConfig");
+                });
+
+            modelBuilder.Entity("Hutzper.Project.Mekiki.Models.Config.AppConfig", b =>
+                {
+                    b.Navigation("inspectionUnits");
+                });
 #pragma warning restore 612, 618
         }
     }

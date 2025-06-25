@@ -26,16 +26,16 @@ public abstract record Common<T> where T : Common<T>, new()
     }
     public void Serialize(string fullPath)
     {
-        DateTimeOfUpdating = DateTime.Now;
+        this.DateTimeOfUpdating = DateTime.Now;
         Serilog.Log.Information($"Serialize: {fullPath}");
         var folder = Path.GetDirectoryName(fullPath);
         Directory.CreateDirectory(folder!);
         SaveToml(fullPath, this);
-        FullPath = fullPath;
+        this.FullPath = fullPath;
     }
     public void Serialize()
     {
-        SaveToml(FullPath, this);
+        SaveToml(this.FullPath, this);
     }
     public T? DeepClone() => ToModel<T>(FromModel(this));
 }

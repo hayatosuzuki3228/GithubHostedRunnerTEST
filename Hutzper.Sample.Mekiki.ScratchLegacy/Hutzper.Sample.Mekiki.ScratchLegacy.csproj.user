@@ -1,0 +1,42 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="Current" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup />
+  <ItemGroup>
+    <Compile Update="Forms\Common\Diagnostics\DeviceStatusUserControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="Forms\Common\Diagnostics\MultiDeviceStatusUserControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="Forms\ConfigurationForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Forms\Grabber\GigESentechLineSensorFFC_Form.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Forms\Grabber\GrabberParameterForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Forms\Inspection\OperationForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Forms\Inspection\ResultAndStatisticsDisplay.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="Forms\Inspection\ResultJudgmentParameterForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Forms\Lighting\LightParameterForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Forms\MaintenanceForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Forms\MenuForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Forms\PlcDiagnosticsForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+  </ItemGroup>
+</Project>

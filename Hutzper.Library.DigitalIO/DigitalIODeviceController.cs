@@ -333,7 +333,7 @@ namespace Hutzper.Library.DigitalIO
                     }
 
                     var thread = new QueueThread<MonitoringControlItem>() { Priority = ThreadPriority.Highest };
-                    thread.Dequeue += Thread_Dequeue;
+                    thread.Dequeue += this.Thread_Dequeue;
 
                     var index = this.AllDevices.IndexOf(d);
                     var item = new MonitoringControlItem(d, this.ControlInfo, times[index]);

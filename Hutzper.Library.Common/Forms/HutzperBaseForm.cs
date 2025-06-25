@@ -227,7 +227,7 @@ namespace Hutzper.Library.Common.Forms
         /// </summary>
         public HutzperBaseForm(IServiceCollectionSharing? serviceCollectionSharing)
         {
-            InitializeComponent();
+            this.InitializeComponent();
 
             // DIサービスへの参照を保持
             this.Services = serviceCollectionSharing;

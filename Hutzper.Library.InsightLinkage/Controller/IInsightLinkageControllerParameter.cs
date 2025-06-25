@@ -1,30 +1,33 @@
 ﻿using Hutzper.Library.Common.Data;
 using Hutzper.Library.InsightLinkage.Connection;
 
-namespace Hutzper.Library.InsightLinkage.Controller
+namespace Hutzper.Library.InsightLinkage.Controller;
+
+/// <summary>
+/// Insight連携パラメータ
+/// </summary>
+public interface IInsightLinkageControllerParameter : IControllerParameter
 {
     /// <summary>
-    /// Insight連携パラメータ
+    /// 使用するかどうか
     /// </summary>
-    public interface IInsightLinkageControllerParameter : IControllerParameter
-    {
-        /// <summary>
-        /// 使用するかどうか
-        /// </summary>
-        public bool IsUse { get; set; }
+    public bool IsUse { get; set; }
 
-        /// <summary>
-        /// uuid
-        /// </summary>
-        public string Uuid { get; set; }
+    /// <summary>
+    /// 再接続
+    /// </summary>
+    public bool IsReconnectable { get; set; }
 
-        /// <summary>
-        /// 管理するコネクション毎のパラメータリスト
-        /// </summary>
-        public List<IConnectionParameter> ConnectionParameters { get; set; }
+    /// <summary>
+    /// 再接続試行間隔
+    /// </summary>
+    public int ReconnectionAttemptsIntervalSec { get; set; }
 
-        public List<IFileUploaderParameter> FileUploaderParameters { get; }
+    /// <summary>
+    /// 管理するコネクション毎のパラメータリスト
+    /// </summary>
+    public List<IConnectionParameter> ConnectionParameters { get; set; }
 
-        public List<ITextMessengerParameter> TextMessengerParameter { get; }
-    }
+    public List<IFileUploaderParameter> FileUploaderParameters { get; }
+    public List<ITextMessengerParameter> TextMessengerParameter { get; }
 }

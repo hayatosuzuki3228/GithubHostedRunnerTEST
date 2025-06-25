@@ -12,7 +12,7 @@ namespace Hutzper.Library.Common.Forms
         {
             container.Add(this);
 
-            SetStyle(ControlStyles.Selectable, false);
+            this.SetStyle(ControlStyles.Selectable, false);
         }
     }
 }

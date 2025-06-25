@@ -563,7 +563,7 @@ namespace Hutzper.Library.ImageGrabber.Device.EBus
                             this.OffsetX = gp.OffsetX;
                             this.OffsetY = gp.OffsetY;
 
-                            this.Handles.Device.OnLinkDisconnected += Device_OnLinkDisconnected1;
+                            this.Handles.Device.OnLinkDisconnected += this.Device_OnLinkDisconnected1;
                         }
                         #endregion
                     }

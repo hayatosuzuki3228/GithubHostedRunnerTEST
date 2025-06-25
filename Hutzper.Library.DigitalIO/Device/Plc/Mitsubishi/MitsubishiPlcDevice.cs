@@ -153,17 +153,17 @@ namespace Hutzper.Library.DigitalIO.Device.Plc.Mitsubishi
             {
                 if (this.IsBinary && this.ReadCommand is not null)
                 {
-                    if (false == SendCommand((byte[])ReadCommand, this.Stream)) return false;
+                    if (false == SendCommand((byte[])this.ReadCommand, this.Stream)) return false;
                 }
                 else if (this.ReadCommand is byte[] bytesReadCommand)
                 {
-                    bool sendResult = SendCommand((string)ReadCommand, this.Stream);
+                    bool sendResult = SendCommand((string)this.ReadCommand, this.Stream);
                     if (false == sendResult) return false;
                 }
                 else return false;
                 try
                 {
-                    bool receiveResult = ReceiveResponse(this.Stream, NumberOfInputs, out int[] intValues, this.IsBinary); // 応答の読み取り
+                    bool receiveResult = ReceiveResponse(this.Stream, this.NumberOfInputs, out int[] intValues, this.IsBinary); // 応答の読み取り
                     if (true == receiveResult) values = intValues;
                     else return false;
                 }
@@ -181,7 +181,7 @@ namespace Hutzper.Library.DigitalIO.Device.Plc.Mitsubishi
                 string commandHexString = string.Empty;
                 if (inputDeviceNumbers != null)
                 {
-                    commandHexString = CreateReadCommand(NumberOfInputs, "X", inputDeviceNumbers);
+                    commandHexString = this.CreateReadCommand(this.NumberOfInputs, "X", inputDeviceNumbers);
                     if (string.IsNullOrEmpty(commandHexString)) return false;
                 }
 
@@ -190,7 +190,7 @@ namespace Hutzper.Library.DigitalIO.Device.Plc.Mitsubishi
                 if (false == sendResult) return false;
                 try
                 {
-                    bool receiveResult = ReceiveResponse(this.Stream!, NumberOfInputs, out int[] intValues); // 応答の読み取り
+                    bool receiveResult = ReceiveResponse(this.Stream!, this.NumberOfInputs, out int[] intValues); // 応答の読み取り
                     if (true == receiveResult) values = intValues;
                     else return false;
                 }
@@ -206,7 +206,7 @@ namespace Hutzper.Library.DigitalIO.Device.Plc.Mitsubishi
         // 指定読み出し（bool）
         public bool ReadInput(int inputDeviceNumber, out bool value)
         {
-            bool result = ReadInput(inputDeviceNumber, out int intValue);
+            bool result = this.ReadInput(inputDeviceNumber, out int intValue);
             value = intValue != 0;
 
             return result;
@@ -216,7 +216,7 @@ namespace Hutzper.Library.DigitalIO.Device.Plc.Mitsubishi
         public bool ReadInput(int inputDeviceNumber, out int value)
         {
             value = 0;
-            string commandHexString = CreateReadCommand(1, "X", [inputDeviceNumber]); // 読み出しコマンドを作成
+            string commandHexString = this.CreateReadCommand(1, "X", [inputDeviceNumber]); // 読み出しコマンドを作成
             if (string.IsNullOrEmpty(commandHexString)) return false;
 
             bool sendResult = SendCommand(commandHexString, this.Stream!); // コマンドを送信
@@ -246,7 +246,7 @@ namespace Hutzper.Library.DigitalIO.Device.Plc.Mitsubishi
         public bool WriteOutput(bool[] values)
         {
             int[] intValues = Array.ConvertAll(values, b => b ? 1 : 0);
-            return WriteOutput(intValues);
+            return this.WriteOutput(intValues);
         }
 
         // 全書き込み（int）
@@ -256,7 +256,7 @@ namespace Hutzper.Library.DigitalIO.Device.Plc.Mitsubishi
             string commandHexString = string.Empty;
             if (outputDeviceNumbers != null)
             {
-                commandHexString = CreateWriteCommand(NumberOfOutputs, "Y", outputDeviceNumbers, values); // 書込みコマンドを作成
+                commandHexString = this.CreateWriteCommand(this.NumberOfOutputs, "Y", outputDeviceNumbers, values); // 書込みコマンドを作成
                 if (string.IsNullOrEmpty(commandHexString)) return false;
             }
             bool sendResult = SendCommand(commandHexString, this.Stream!); // コマンドを送信
@@ -265,7 +265,7 @@ namespace Hutzper.Library.DigitalIO.Device.Plc.Mitsubishi
         }
 
         // 指定書き込み（bool）
-        public bool WriteOutput(int outputDeviceNumber, bool value) => WriteOutput(outputDeviceNumber, value ? 1 : 0);
+        public bool WriteOutput(int outputDeviceNumber, bool value) => this.WriteOutput(outputDeviceNumber, value ? 1 : 0);
 
         // 指定書き込み（int）
         public bool WriteOutput(int outputDeviceNumber, int value)
@@ -283,7 +283,7 @@ namespace Hutzper.Library.DigitalIO.Device.Plc.Mitsubishi
             }
             else
             {
-                string commandHexString = CreateWriteCommand(1, "Y", outputDeviceNumbers, values);
+                string commandHexString = this.CreateWriteCommand(1, "Y", outputDeviceNumbers, values);
                 if (string.IsNullOrEmpty(commandHexString)) return false;
                 bool sendResult = SendCommand(commandHexString, this.Stream!); // コマンドを送信
                 if (false == sendResult) return false;
@@ -296,7 +296,7 @@ namespace Hutzper.Library.DigitalIO.Device.Plc.Mitsubishi
             {
                 byte[]? binaryCommand;
                 if (deviceNumberPair.IsBit) binaryCommand = this.CreateBinaryRandomBitWriteCommand(1, new DeviceNumberPair[1] { deviceNumberPair });
-                else binaryCommand = CreateBinaryRandomWordWriteCommand(deviceNumberPair);
+                else binaryCommand = this.CreateBinaryRandomWordWriteCommand(deviceNumberPair);
                 if (binaryCommand is null || binaryCommand.Length == 0) return false;
                 bool sendResult = SendCommand(binaryCommand, this.Stream!);
                 if (false == sendResult) return false;
@@ -308,8 +308,8 @@ namespace Hutzper.Library.DigitalIO.Device.Plc.Mitsubishi
             else
             {
                 string commandHexString;
-                if (deviceNumberPair.IsBit) commandHexString = CreateRandomBitWriteCommand(1, new DeviceNumberPair[1] { deviceNumberPair }); // 書込みコマンドを作成
-                else commandHexString = CreateRandomWordWriteCommand(deviceNumberPair);
+                if (deviceNumberPair.IsBit) commandHexString = this.CreateRandomBitWriteCommand(1, new DeviceNumberPair[1] { deviceNumberPair }); // 書込みコマンドを作成
+                else commandHexString = this.CreateRandomWordWriteCommand(deviceNumberPair);
                 if (string.IsNullOrEmpty(commandHexString)) return false;
                 bool sendResult = SendCommand(commandHexString, this.Stream!); // コマンドを送信
                 if (false == sendResult) return false;
@@ -333,7 +333,7 @@ namespace Hutzper.Library.DigitalIO.Device.Plc.Mitsubishi
             if (isBinary)
             {
                 byte[] binaryCommand;
-                binaryCommand = CreateBinaryRandomBitWriteCommand(deviceNumberPairs.Length, deviceNumberPairs);
+                binaryCommand = this.CreateBinaryRandomBitWriteCommand(deviceNumberPairs.Length, deviceNumberPairs);
                 if (binaryCommand.Length == 0) return false;
                 bool sendResult = SendCommand(binaryCommand, this.Stream!);
                 if (false == sendResult) return false;
@@ -344,7 +344,7 @@ namespace Hutzper.Library.DigitalIO.Device.Plc.Mitsubishi
             }
             else
             {
-                string commandHexString = CreateRandomBitWriteCommand(deviceNumberPairs.Length, deviceNumberPairs); // 書込みコマンドを作成
+                string commandHexString = this.CreateRandomBitWriteCommand(deviceNumberPairs.Length, deviceNumberPairs); // 書込みコマンドを作成
                 if (string.IsNullOrEmpty(commandHexString)) return false;
                 bool sendResult = SendCommand(commandHexString, this.Stream!); // コマンドを送信
                 byte[] response = new byte[1024];
@@ -382,7 +382,7 @@ namespace Hutzper.Library.DigitalIO.Device.Plc.Mitsubishi
             string commandHexString = string.Empty; // 読み出しコマンドを作成
             if (outputDeviceNumbers != null)
             {
-                commandHexString = CreateReadCommand(NumberOfOutputs, "Y", outputDeviceNumbers);
+                commandHexString = this.CreateReadCommand(this.NumberOfOutputs, "Y", outputDeviceNumbers);
                 if (string.IsNullOrEmpty(commandHexString)) return false;
             }
             var sendResult = SendCommand(commandHexString, this.Stream!); // コマンドを送信
@@ -391,7 +391,7 @@ namespace Hutzper.Library.DigitalIO.Device.Plc.Mitsubishi
             try
             {
                 // 応答の読み取り
-                bool receiveResult = ReceiveResponse(this.Stream!, NumberOfOutputs, out int[] intValues);
+                bool receiveResult = ReceiveResponse(this.Stream!, this.NumberOfOutputs, out int[] intValues);
                 if (true == receiveResult) values = intValues;
                 else return false;
             }
@@ -408,7 +408,7 @@ namespace Hutzper.Library.DigitalIO.Device.Plc.Mitsubishi
         public bool ReadOutput(int outputDeviceNumber, out bool value)
         {
             int intValue;
-            bool result = ReadOutput(outputDeviceNumber, out intValue);
+            bool result = this.ReadOutput(outputDeviceNumber, out intValue);
             value = intValue != 0;
 
             return result;
@@ -424,7 +424,7 @@ namespace Hutzper.Library.DigitalIO.Device.Plc.Mitsubishi
             }
             else
             {
-                string commandHexString = CreateRandomReadCommand(deviceNumberPairs.Length, deviceNumberPairs);
+                string commandHexString = this.CreateRandomReadCommand(deviceNumberPairs.Length, deviceNumberPairs);
                 if (string.IsNullOrEmpty(commandHexString)) return false;
                 bool sendResult = SendCommand(commandHexString, this.Stream!); // コマンドを送信
                 if (false == sendResult) return false;
@@ -486,7 +486,7 @@ namespace Hutzper.Library.DigitalIO.Device.Plc.Mitsubishi
 
             // 読み出しコマンドを作成
             int[] outputDeviceNumbers = { outputDeviceNumber };
-            string commandHexString = CreateReadCommand(1, "Y", outputDeviceNumbers);
+            string commandHexString = this.CreateReadCommand(1, "Y", outputDeviceNumbers);
             if (string.IsNullOrEmpty(commandHexString))
             {
                 return false;
@@ -634,7 +634,7 @@ namespace Hutzper.Library.DigitalIO.Device.Plc.Mitsubishi
                 commandData.Add((byte)((deviceNumberPair.NumberPair >> 8) & 0xFF));
                 commandData.Add((byte)((deviceNumberPair.NumberPair >> 16) & 0xFF));
 
-                commandData.Add(Convert.ToByte(DeviceIDBinaryTransfer(deviceNumberPair.DeviceCode), 16));
+                commandData.Add(Convert.ToByte(this.DeviceIDBinaryTransfer(deviceNumberPair.DeviceCode), 16));
 
                 if (deviceNumberPair.Value is null) continue;
                 commandData.Add((byte)(deviceNumberPair.Value! & 0xFF));
@@ -726,7 +726,7 @@ namespace Hutzper.Library.DigitalIO.Device.Plc.Mitsubishi
             commandData.Add((byte)(deviceNumberPair.NumberPair & 0xFF));
             commandData.Add((byte)((deviceNumberPair.NumberPair >> 8) & 0xFF));
             commandData.Add((byte)((deviceNumberPair.NumberPair >> 16) & 0xFF));
-            try { commandData.Add(Convert.ToByte(DeviceIDBinaryTransfer(deviceNumberPair.DeviceCode), 16)); } catch { return null; }
+            try { commandData.Add(Convert.ToByte(this.DeviceIDBinaryTransfer(deviceNumberPair.DeviceCode), 16)); } catch { return null; }
 
 
             if (isWork)
@@ -878,7 +878,7 @@ namespace Hutzper.Library.DigitalIO.Device.Plc.Mitsubishi
                 commandData.Add((byte)((deviceNumberPair.NumberPair >> 8) & 0xFF));
                 commandData.Add((byte)((deviceNumberPair.NumberPair >> 16) & 0xFF));
 
-                commandData.Add(Convert.ToByte(DeviceIDBinaryTransfer(deviceNumberPair.DeviceCode), 16));
+                commandData.Add(Convert.ToByte(this.DeviceIDBinaryTransfer(deviceNumberPair.DeviceCode), 16));
             }
 
             // 要求データ長の計算（コマンドとデータ部分＋監視タイマの文字数を16進数で表現）
@@ -952,7 +952,7 @@ namespace Hutzper.Library.DigitalIO.Device.Plc.Mitsubishi
                 (byte)((deviceNumberPair.NumberPair >> 8) & 0xFF),
                 (byte)((deviceNumberPair.NumberPair >> 16) & 0xFF),
 
-                Convert.ToByte(DeviceIDBinaryTransfer(deviceNumberPair.DeviceCode), 16), //デバイスコード
+                Convert.ToByte(this.DeviceIDBinaryTransfer(deviceNumberPair.DeviceCode), 16), //デバイスコード
 
                 (byte)(accessPointCountInt & 0xFF),
                 (byte)((accessPointCountInt >> 8) & 0xFF),

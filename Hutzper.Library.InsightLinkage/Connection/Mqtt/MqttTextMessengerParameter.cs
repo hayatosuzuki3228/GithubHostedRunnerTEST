@@ -18,9 +18,14 @@ namespace Hutzper.Library.InsightLinkage.Connection.Mqtt
         public bool IsUse { get; set; } = true;
 
         /// <summary>
-        /// uuid
+        /// デバイスuuid
         /// </summary>
-        public string Uuid { get; set; } = string.Empty;
+        public string DeviceUuid { get; set; } = string.Empty;
+
+        /// <summary>
+        /// 企業uuid
+        /// </summary>
+        public string CompanyUuid { get; set; } = string.Empty;
 
         #endregion
 
@@ -39,8 +44,8 @@ namespace Hutzper.Library.InsightLinkage.Connection.Mqtt
         /// <summary>
         /// トピック
         /// </summary>
-        [IniKey(true, "mekiki")]
-        public string Topic { get; set; } = "mekiki";
+        [IniKey(true, "mekikibaito/v1")]
+        public string Topic { get; set; } = "mekikibaito/v1";
 
         /// <summary>
         /// CAファイル

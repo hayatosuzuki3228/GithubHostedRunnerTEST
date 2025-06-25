@@ -1,0 +1,46 @@
+﻿<Project>
+  <PropertyGroup>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+    <Platforms>x64</Platforms>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
+    <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <TreatWarningsAsErrors>True</TreatWarningsAsErrors>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <TreatWarningsAsErrors>True</TreatWarningsAsErrors>
+  </PropertyGroup>
+
+  <!-- プロジェクト名が ".Test" で終わる場合にのみ適用するプロパティ -->
+  <PropertyGroup Condition=" '$([System.String]::Copy($(MSBuildProjectName)).EndsWith(&quot;.Test&quot;))' == 'True' ">
+    <IsPackable>false</IsPackable>
+    <IsTestProject>true</IsTestProject>
+  </PropertyGroup>
+
+  <!-- プロジェクト名が ".Test" で終わる場合にのみ適用するプロパティ -->
+  <ItemGroup Condition=" '$([System.String]::Copy($(MSBuildProjectName)).EndsWith(&quot;.Test&quot;))' == 'True' ">
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.12.0" />
+    <PackageReference Include="xunit" Version="2.9.2" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.8.2">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="coverlet.collector" Version="6.0.2">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <!-- プロジェクト名が ".Test" で終わる場合にのみ適用するプロパティ -->
+  <ItemGroup Condition=" '$([System.String]::Copy($(MSBuildProjectName)).EndsWith(&quot;.Test&quot;))' == 'True' ">
+    <Using Include="Xunit" />
+  </ItemGroup>
+
+</Project>

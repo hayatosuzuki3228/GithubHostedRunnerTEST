@@ -8,344 +8,332 @@ using Hutzper.Library.InsightLinkage.Connection;
 using Hutzper.Library.InsightLinkage.Data;
 
 
-namespace Hutzper.Library.InsightLinkage.Controller
+namespace Hutzper.Library.InsightLinkage.Controller;
+
+/// <summary>
+/// IInsightLinkageControllerf実装
+/// </summary>
+[Serializable]
+public class InsightLinkageController : ControllerBase, IInsightLinkageController
 {
+    #region IController
+
     /// <summary>
-    /// IInsightLinkageControllerf実装
+    /// 初期化
     /// </summary>
-    [Serializable]
-    public class InsightLinkageController : ControllerBase, IInsightLinkageController
+    /// <param name="serviceCollection"></param>
+    public override void Initialize(IServiceCollectionSharing? serviceCollection)
     {
-        #region IController
-
-        /// <summary>
-        /// 初期化
-        /// </summary>
-        /// <param name="serviceCollection"></param>
-        public override void Initialize(IServiceCollectionSharing? serviceCollection)
+        try
         {
-            try
+            base.Initialize(serviceCollection);
+            this.Connections.ForEach(g => g.Initialize(serviceCollection));
+        }
+        catch (Exception ex)
+        {
+            Serilog.Log.Warning(ex, ex.Message);
+        }
+    }
+
+    /// <summary>
+    /// 設定
+    /// </summary>
+    /// <param name="config"></param>
+    public override void SetConfig(IApplicationConfig? config)
+    {
+        try
+        {
+            base.SetConfig(config);
+            this.Connections.ForEach(d => d.SetConfig(config));
+        }
+        catch (Exception ex)
+        {
+            Serilog.Log.Warning(ex, ex.Message);
+        }
+    }
+
+    /// <summary>
+    /// パラメーター設定
+    /// </summary>
+    /// <param name="parameter"></param>
+    public override void SetParameter(IControllerParameter? parameter)
+    {
+        try
+        {
+            base.SetParameter(parameter);
+            if (parameter is IInsightLinkageControllerParameter p)
             {
-                base.Initialize(serviceCollection);
-                this.Connections.ForEach(g => g.Initialize(serviceCollection));
-            }
-            catch (Exception ex)
-            {
-                Serilog.Log.Warning(ex, ex.Message);
+                this.Parameter = p;
             }
         }
-
-        /// <summary>
-        /// 設定
-        /// </summary>
-        /// <param name="config"></param>
-        public override void SetConfig(IApplicationConfig? config)
+        catch (Exception ex)
         {
-            try
-            {
-                base.SetConfig(config);
-                this.Connections.ForEach(d => d.SetConfig(config));
-            }
-            catch (Exception ex)
-            {
-                Serilog.Log.Warning(ex, ex.Message);
-            }
+            Serilog.Log.Warning(ex, ex.Message);
+        }
+    }
+
+    /// <summary>
+    /// 更新
+    /// </summary>
+    public override void Update()
+    {
+        try
+        {
+            base.Update();
+            this.Connections.ForEach(d => d.Update());
+        }
+        catch (Exception ex)
+        {
+            Serilog.Log.Warning(ex, ex.Message);
+        }
+    }
+
+    /// <summary>
+    /// オープン
+    /// </summary>
+    /// <returns></returns>
+    public override bool Open()
+    {
+        var isSuccess = true;
+
+        try
+        {
+            this.Connections.ForEach(g => isSuccess &= g.Open());
+        }
+        catch (Exception ex)
+        {
+            Serilog.Log.Warning(ex, ex.Message);
         }
 
-        /// <summary>
-        /// パラメーター設定
-        /// </summary>
-        /// <param name="parameter"></param>
-        public override void SetParameter(IControllerParameter? parameter)
+        return isSuccess;
+    }
+
+    /// <summary>
+    /// クローズ
+    /// </summary>
+    /// <returns></returns>
+    public override bool Close()
+    {
+        var isSuccess = true;
+
+        try
         {
-            try
+            this.Connections.ForEach(g => isSuccess &= g.Close());
+        }
+        catch (Exception ex)
+        {
+            Serilog.Log.Warning(ex, ex.Message);
+        }
+
+        return isSuccess;
+    }
+
+    #endregion
+
+    #region IInsightLinkageController
+
+    /// <summary>
+    /// 管理するコネクションリスト
+    /// </summary>
+    public virtual List<IConnection> Connections { get; set; } = new();
+
+    /// <summary>
+    /// コネクション割り付け
+    /// </summary>
+    /// <param name="devices"></param>
+    /// <returns></returns>
+    public virtual bool Attach(params IConnection[] connections)
+    {
+        var isSuccess = true;
+
+        try
+        {
+            foreach (var c in connections)
             {
-                base.SetParameter(parameter);
-                if (parameter is IInsightLinkageControllerParameter p)
+                if (false == this.Connections.Contains(c))
                 {
-                    this.Parameter = p;
-
-                    foreach (var c in this.Connections)
+                    if (c is not null)
                     {
-                        var index = this.Connections.IndexOf(c);
-
-                        if (p.ConnectionParameters.Count > index)
-                        {
-                            p.ConnectionParameters[index].Uuid = p.Uuid;
-                            c.SetParameter(p.ConnectionParameters[index]);
-                        }
+                        this.Connections.Add(c);
+                    }
+                    else
+                    {
+                        throw new Exception("connection is null");
                     }
                 }
             }
-            catch (Exception ex)
-            {
-                Serilog.Log.Warning(ex, ex.Message);
-            }
+        }
+        catch (Exception ex)
+        {
+            isSuccess = false;
+            Serilog.Log.Warning(ex, ex.Message);
         }
 
-        /// <summary>
-        /// 更新
-        /// </summary>
-        public override void Update()
+        return isSuccess;
+    }
+
+    /// <summary>
+    /// Insightへの送信リクエスト
+    /// </summary>
+    /// <param name="request"></param>
+    /// <returns></returns>
+    public virtual bool Send(params IInsightLinkageRequest[] request)
+    {
+        var isSuccess = false;
+
+        try
         {
-            try
+            if (this.Parameter is IInsightLinkageControllerParameter p)
             {
-                base.Update();
-                this.Connections.ForEach(d => d.Update());
-            }
-            catch (Exception ex)
-            {
-                Serilog.Log.Warning(ex, ex.Message);
-            }
-        }
-
-        /// <summary>
-        /// オープン
-        /// </summary>
-        /// <returns></returns>
-        public override bool Open()
-        {
-            var isSuccess = true;
-
-            try
-            {
-                this.Connections.ForEach(g => isSuccess &= g.Open());
-            }
-            catch (Exception ex)
-            {
-                Serilog.Log.Warning(ex, ex.Message);
-            }
-
-            return isSuccess;
-        }
-
-        /// <summary>
-        /// クローズ
-        /// </summary>
-        /// <returns></returns>
-        public override bool Close()
-        {
-            var isSuccess = true;
-
-            try
-            {
-                this.Connections.ForEach(g => isSuccess &= g.Close());
-            }
-            catch (Exception ex)
-            {
-                Serilog.Log.Warning(ex, ex.Message);
-            }
-
-            return isSuccess;
-        }
-
-        #endregion
-
-        #region IInsightLinkageController
-
-        /// <summary>
-        /// 管理するコネクションリスト
-        /// </summary>
-        public virtual List<IConnection> Connections { get; set; } = new();
-
-        /// <summary>
-        /// コネクション割り付け
-        /// </summary>
-        /// <param name="devices"></param>
-        /// <returns></returns>
-        public virtual bool Attach(params IConnection[] connections)
-        {
-            var isSuccess = true;
-
-            try
-            {
-                foreach (var c in connections)
+                if (true == p.IsUse && request is not null)
                 {
-                    if (false == this.Connections.Contains(c))
+                    foreach (var r in request)
                     {
-                        if (c is not null)
-                        {
-                            this.Connections.Add(c);
-                        }
-                        else
-                        {
-                            throw new Exception("connection is null");
-                        }
+                        this.RequestProcessingThread.Enqueue(r);
                     }
                 }
+                isSuccess = true;
             }
-            catch (Exception ex)
-            {
-                isSuccess = false;
-                Serilog.Log.Warning(ex, ex.Message);
-            }
-
-            return isSuccess;
+        }
+        catch (Exception ex)
+        {
+            Serilog.Log.Warning(ex, ex.Message);
         }
 
-        /// <summary>
-        /// Insightへの送信リクエスト
-        /// </summary>
-        /// <param name="request"></param>
-        /// <returns></returns>
-        public virtual bool Send(params IInsightLingageRequest[] request)
+        return isSuccess;
+    }
+
+    /// <summary>
+    /// 処理結果イベント
+    /// </summary>
+    public event Action<object, IInsightLinkageResult>? Processed;
+
+    #endregion
+
+    #region SafelyDisposable
+
+    /// <summary>
+    /// リソースの解放
+    /// </summary>
+    protected override void DisposeExplicit()
+    {
+        try
         {
-            var isSuccess = false;
-
-            try
+            foreach (var c in this.Connections)
             {
-                if (this.Parameter is IInsightLinkageControllerParameter p)
-                {
-                    if (true == p.IsUse && request is not null)
-                    {
-                        foreach (var r in request)
-                        {
-                            this.RequestProcessingThread.Enqueue(r);
-                        }
-                    }
-                    isSuccess = true;
-                }
+                this.DisposeSafely(c);
             }
-            catch (Exception ex)
-            {
-                Serilog.Log.Warning(ex, ex.Message);
-            }
+            this.Connections.Clear();
 
-            return isSuccess;
+            this.DisposeSafely(this.RequestProcessingThread);
         }
-
-        /// <summary>
-        /// 処理結果イベント
-        /// </summary>
-        public event Action<object, IInsightLingageResult>? Processed;
-
-        #endregion
-
-        #region SafelyDisposable
-
-        /// <summary>
-        /// リソースの解放
-        /// </summary>
-        protected override void DisposeExplicit()
+        catch (Exception ex)
         {
-            try
+            Serilog.Log.Warning(ex, ex.Message);
+        }
+    }
+
+    #endregion
+
+    #region フィールド
+
+    /// <summary>
+    /// パラメータ
+    /// </summary>
+    protected IControllerParameter? Parameter;
+
+    /// <summary>
+    /// 要求処理スレッド
+    /// </summary>
+    protected QueueThread<IInsightLinkageRequest> RequestProcessingThread;
+
+    #endregion
+
+    #region コンストラクタ
+
+    /// <summary>
+    /// コンストラクタ
+    /// </summary>
+    /// <param name="index"></param>
+    public InsightLinkageController() : this(typeof(InsightLinkageController).Name, -1)
+    {
+    }
+
+    /// <summary>
+    /// コンストラクタ
+    /// </summary>
+    /// <param name="index"></param>
+    public InsightLinkageController(string nickname, int index = -1) : base(nickname, index)
+    {
+        this.RequestProcessingThread = new QueueThread<IInsightLinkageRequest>();
+        this.RequestProcessingThread.Dequeue += this.RequestProcessingThread_Dequeue;
+    }
+
+    #endregion
+
+    /// <summary>
+    /// 要求スレッド処理
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="request"></param>
+    protected virtual void RequestProcessingThread_Dequeue(object sender, IInsightLinkageRequest request)
+    {
+        var result = new InsightLinkageResult(request);
+
+        try
+        {
+            result.Request.RequestCounter++;
+
+            if (this.Parameter is IInsightLinkageControllerParameter p)
             {
                 foreach (var c in this.Connections)
                 {
-                    this.DisposeSafely(c);
-                }
-                this.Connections.Clear();
-
-                this.DisposeSafely(this.RequestProcessingThread);
-            }
-            catch (Exception ex)
-            {
-                Serilog.Log.Warning(ex, ex.Message);
-            }
-        }
-
-        #endregion
-
-        #region フィールド
-
-        /// <summary>
-        /// パラメータ
-        /// </summary>
-        protected IControllerParameter? Parameter;
-
-        /// <summary>
-        /// 要求処理スレッド
-        /// </summary>
-        protected QueueThread<IInsightLingageRequest> RequestProcessingThread;
-
-        #endregion
-
-        #region コンストラクタ
-
-        /// <summary>
-        /// コンストラクタ
-        /// </summary>
-        /// <param name="index"></param>
-        public InsightLinkageController() : this(typeof(InsightLinkageController).Name, -1)
-        {
-        }
-
-        /// <summary>
-        /// コンストラクタ
-        /// </summary>
-        /// <param name="index"></param>
-        public InsightLinkageController(string nickname, int index = -1) : base(nickname, index)
-        {
-            this.RequestProcessingThread = new QueueThread<IInsightLingageRequest>();
-            this.RequestProcessingThread.Dequeue += this.RequestProcessingThread_Dequeue;
-        }
-
-        #endregion
-
-        /// <summary>
-        /// 要求スレッド処理
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="request"></param>
-        protected virtual void RequestProcessingThread_Dequeue(object sender, IInsightLingageRequest request)
-        {
-            var result = new InsightLingageResult(request);
-
-            try
-            {
-                result.Request.RequestCounter++;
-
-                if (this.Parameter is IInsightLinkageControllerParameter p)
-                {
-                    foreach (var c in this.Connections)
+                    if (c is IFileUploader uploader && request.FileUploadRequest is not null)
                     {
-                        if (c is IFileUploader uploader && request.FileUploadRequest is not null)
+                        if (request.InsightRequestType.HasValue)
                         {
-                            if (request.InsightRequestType.HasValue)
-                            {
-                                IFileUploadRequest[] uploadRequests = new[] { request.FileUploadRequest };
+                            IFileUploadRequest[] uploadRequests = new[] { request.FileUploadRequest };
 
-                                var insightRequestType = request.InsightRequestType.Value; // null 許容型から通常の型に変換
-                                result.Results.Add(c.LinkageType, uploader.UploadFile(uploadRequests, insightRequestType));
-                            }
-                            else
-                            {
-                            }
+                            var insightRequestType = request.InsightRequestType.Value; // null 許容型から通常の型に変換
+                            result.Results.Add(c.LinkageType, uploader.UploadFile(uploadRequests, insightRequestType));
                         }
-
-                        if (c is ITextMessenger textMessenger)
+                        else
                         {
-                            result.Results.Add(c.LinkageType, textMessenger.SendText(request.MessageText));
                         }
                     }
-                }
-                else
-                {
-                    throw new Exception("parameter is null");
-                }
-            }
-            catch (Exception ex)
-            {
-                Serilog.Log.Warning(ex, ex.Message);
-            }
 
-            // 処理結果通知
-            this.OnProcessed(result);
+                    if (c is ITextMessenger textMessenger)
+                    {
+                        result.Results.Add(c.LinkageType, textMessenger.SendText(request.MessageText));
+                    }
+                }
+            }
+            else
+            {
+                throw new Exception("parameter is null");
+            }
+        }
+        catch (Exception ex)
+        {
+            Serilog.Log.Warning(ex, ex.Message);
         }
 
-        /// <summary>
-        /// 処理結果イベント通知
-        /// </summary>
-        protected virtual void OnProcessed(IInsightLingageResult result)
+        // 処理結果通知
+        this.OnProcessed(result);
+    }
+
+    /// <summary>
+    /// 処理結果イベント通知
+    /// </summary>
+    protected virtual void OnProcessed(IInsightLinkageResult result)
+    {
+        try
         {
-            try
-            {
-                this.Processed?.Invoke(this, result);
-            }
-            catch (Exception ex)
-            {
-                Serilog.Log.Warning(ex, ex.Message);
-            }
+            this.Processed?.Invoke(this, result);
+        }
+        catch (Exception ex)
+        {
+            Serilog.Log.Warning(ex, ex.Message);
         }
     }
 }

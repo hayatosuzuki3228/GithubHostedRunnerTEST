@@ -1,9 +1,8 @@
-﻿namespace Hutzper.Library.InsightLinkage.Controller
+﻿namespace Hutzper.Library.InsightLinkage.Controller;
+
+[Serializable]
+public enum InsightLinkageType
 {
-    [Serializable]
-    public enum InsightLinkageType
-    {
-        FileUploading,
-        TextMessaging,
-    }
+    FileUploading,
+    TextMessaging,
 }

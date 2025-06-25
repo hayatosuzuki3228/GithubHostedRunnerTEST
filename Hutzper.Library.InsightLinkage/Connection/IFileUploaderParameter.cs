@@ -1,9 +1,30 @@
-﻿namespace Hutzper.Library.InsightLinkage.Connection
+﻿using Hutzper.Library.Common.Attribute;
+
+namespace Hutzper.Library.InsightLinkage.Connection;
+
+/// <summary>
+/// ファイルアップローダーパラメータ
+/// </summary>
+public interface IFileUploaderParameter : IConnectionParameter
 {
     /// <summary>
-    /// ファイルアップローダーパラメータ
+    /// アクセスキー ID
     /// </summary>
-    public interface IFileUploaderParameter : IConnectionParameter
-    {
-    }
+    public string AccessKeyID { get; set; }
+
+    /// <summary>
+    /// シークレットアクセスキー
+    /// </summary>
+    public string SecretKey { get; set; }
+
+    /// <summary>
+    /// プロジェクトUUID
+    /// </summary>
+    public string ProjectUuid { get; set; }
+
+    /// <summary>
+    /// バケット名
+    /// </summary>
+    [IniKey(true, "insight-image")]
+    public string BucketName { get; set; }
 }

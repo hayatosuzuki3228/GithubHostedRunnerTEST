@@ -94,7 +94,7 @@
         /// </summary>
         public HutzperForm(IServiceCollectionSharing? serviceCollectionSharing) : base(serviceCollectionSharing)
         {
-            InitializeComponent();
+            this.InitializeComponent();
         }
 
         #endregion
