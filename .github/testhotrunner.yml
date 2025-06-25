@@ -1,0 +1,33 @@
+name: xUnit
+
+on:
+  pull_request:
+    branches: ["develop", "main"]
+jobs:
+  xunit:
+    runs-on: self-hosted
+    env:
+      NUGET_PACKAGES: ${{ github.workspace }}/.nuget/packages
+
+    strategy:
+      matrix:
+        test_project:
+          - Hutzper.Project.Mekiki.Test/Hutzper.Project.Mekiki.Test.csproj
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          lfs: true
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+          cache: true
+          cache-dependency-path: "**/packages.lock.json"
+
+      - name: Restore dependencies
+        run: dotnet restore --locked-mode
+
+      - name: Run xUnit Tests
+        run: dotnet test ${{ matrix.test_project }} -r win-x64
