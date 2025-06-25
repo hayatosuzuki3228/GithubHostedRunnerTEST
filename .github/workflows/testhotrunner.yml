@@ -32,11 +32,3 @@ jobs:
 
       - name: Run xUnit tests
         run: dotnet test ${{ matrix.test_project }} -r win-x64
-
-      - name: Show Docker info
-        run: docker info
-
-      - name: Show Docker container logs
-        run: |
-          docker ps -a
-          docker logs $(docker ps -aq --filter "ancestor=postgres:15") || echo "No container logs"
