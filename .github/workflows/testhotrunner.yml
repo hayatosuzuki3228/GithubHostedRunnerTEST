@@ -11,6 +11,7 @@ jobs:
     runs-on: self-hosted
     env:
       NUGET_PACKAGES: ${{ github.workspace }}/.nuget/packages
+      DOCKER_HOST: "npipe:////./pipe/docker_engine"
 
     strategy:
       matrix:
