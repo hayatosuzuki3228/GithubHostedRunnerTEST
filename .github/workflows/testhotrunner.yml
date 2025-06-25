@@ -19,8 +19,11 @@ jobs:
           - Hutzper.Project.Mekiki.Test/Hutzper.Project.Mekiki.Test.csproj
     steps:
       - name: Create .testcontainers.properties
-        shell: bash
-        run: echo "docker.host=npipe:////./pipe/docker_engine" > $env:USERPROFILE\.testcontainers.properties
+        shell: pwsh
+        run: |
+          $content = 'docker.host=npipe:////./pipe/docker_engine'
+          $path = "$env:USERPROFILE\.testcontainers.properties"
+          Set-Content -Path $path -Value $content -Encoding ASCII
 
       - uses: actions/checkout@v4
         with:
