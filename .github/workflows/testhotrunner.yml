@@ -19,7 +19,7 @@ jobs:
           - Hutzper.Project.Mekiki.Test/Hutzper.Project.Mekiki.Test.csproj
     steps:
       - name: Create .testcontainers.properties
-        shell: pwsh
+        shell: powershell
         run: |
           $content = 'docker.host=npipe:////./pipe/docker_engine'
           $path = "$env:USERPROFILE\.testcontainers.properties"
